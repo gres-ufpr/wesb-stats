@@ -51,7 +51,7 @@ function plotCollaborationNetwork(collaborativeGraph, size) {
             "imports": collaborativeGraph[i].children
         });
     }
-console.log(size)
+
   var nodes = cluster.nodes(packageHierarchy(classes)),
       links = packageImports(nodes);
 

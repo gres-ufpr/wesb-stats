@@ -474,8 +474,7 @@ function plotListOfPublications(series, years){
              shadow: false
          },
          tooltip: {
-             headerFormat: '<b>{point.x}</b><br/>',
-             pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+             pointFormat: 'Number of Papers: {point.stackTotal}'
          },
          plotOptions: {
              column: {
@@ -725,6 +724,9 @@ function plotNumberOfPublicationsByApplicationAndYear(entries){
             },
 
         },
+        tooltip: {
+            pointFormat: 'Number of Papers: {point.z}',
+        },
         plotOptions: {
             series: {
                 dataLabels: {
@@ -779,6 +781,9 @@ function plotNumberOfPublicationsByUniversityAndYear(entries){
 		subtitle: {
 			text: 'An Estimate'
 		},
+        tooltip: {
+            pointFormat: 'Number of Papers: {point.z}',
+        },
         xAxis: {
             gridLineWidth: 1,
 			min: 2009,
