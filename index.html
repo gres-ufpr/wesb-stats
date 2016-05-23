@@ -33,7 +33,6 @@
         <meta name="msapplication-TileImage" content="img/favicon/ms-icon-144x144.png">
         <meta name="theme-color" content="#1a6693">
 
-        <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
@@ -41,7 +40,7 @@
         <div class="container">
             <div class="row header">
                 <div class="col-md-2">
-                    <img id="logo" class="img-responsive" alt="Responsive image" src="img/logo.png"/>
+                    <img id="logo" class="img-responsive" alt="Logo" src="img/favicon/android-icon-144x144.png"/>
                 </div>
                 <div class="col-md-10">
                     <h4 id="title-1">Statistics of Publications for the</h4>
@@ -52,10 +51,11 @@
             <p>This page is maintained by <a target="_blank" href="http://www.github.com/thiagodnf">Thiago Nascimento</a>, Ph.D student at Federal University of Paraná</p>
 
             <div class="panel-loading hide">
-                <p>
-                    <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
-                    <span>Carregando...</span>
-                </p>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                        <span>Carregando...</span>
+                    </div>
+                </div>
             </div>
 
             <br>
@@ -166,13 +166,36 @@
 			</div>
 		</div>
 
-        <script type="text/javascript" charset="utf8" src="js/jquery.min.js"></script>
+        <div class="modal" id="modal-view-data-publications" tabindex="-1" role="dialog" aria-labelledby="modal-change-location-label">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="modal-change-location-label">Publications</h4>
+					</div>
+					<div class="modal-body">
+						<table class="table table-striped" id="table-view-data-publications">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Publication</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
+        <script type="text/javascript" charset="utf8" src="js/jquery.min.js"></script>
         <script type="text/javascript" charset="utf8" src="js/highcharts.js"></script>
         <script type="text/javascript" charset="utf8" src="js/highcharts-more.js"></script>
         <script type="text/javascript" charset="utf8" src="js/exporting.js"></script>
         <script type="text/javascript" charset="utf8" src="js/bootstrap.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/spin.min.js"></script>
         <script type="text/javascript" charset="utf8" src="js/d3.v3.min.js"></script>
         <script type="text/javascript" charset="utf8" src="js/BibTex-0.1.2.js"></script>
         <script type="text/javascript" charset="utf8" src="js/collaborative-graph.js"></script>
@@ -185,7 +208,6 @@
 
             ga('create', 'UA-46693870-15', 'auto');
             ga('send', 'pageview');
-
         </script>
     </body>
 </html>

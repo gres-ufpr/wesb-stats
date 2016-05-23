@@ -12,6 +12,13 @@ var rankingByUniversityAndYear = [];
 var collaborationNetwork = {};
 var collaborationNetworkSize = {};
 
+var publicationsByYear = {};
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
 function uniques(arr) {
     var a = [];
     for (var i=0, l=arr.length; i<l; i++)
@@ -110,6 +117,10 @@ function viewDataAuthor(event){
 	$('#modal-view-data-author').modal('show');
 }
 
+function viewDataPublications(event){
+	$('#modal-view-data-publications').modal('show');
+}
+
 function viewDataApplication(){
 	$('#modal-view-data-application').modal('show');
 }
@@ -185,7 +196,7 @@ function getApplicationTypes(){
 		"Security and Protection": "10",
 		"Software/Program Verification": "11",
 		"Testing and Debugging": "12",
-		"Testing and Debugging, General Aspects and Survey": "13",
+		//"Testing and Debugging, General Aspects and Survey": "13",
 	};
 }
 
@@ -315,10 +326,23 @@ function parse(content){
     return entries;
 }
 
+function getAuthorString(entry){
+    var str = "";
+
+    $.each(entry.author, function (index, value) {
+		str += value.last.trim()+",";
+	});
+
+    var lastIndex = str.lastIndexOf(",");
+
+    return str.substring(0, lastIndex).replaceAll(","," and ");
+}
+
 function processEntry(entry){
     // Call TRIM function in the all fields
     trimAllFields(entry);
 
+    generatePublications(entry);
 	generateUniversityIds(entry);
     generateRankingByAuthors(entry);
     generateRankingByApplications(entry);
@@ -334,6 +358,19 @@ function trimAllFields(entry){
             entry[c] = entry[c].trim();
         }
     }
+}
+
+function generatePublications(entry){
+
+    if(! publicationsByYear[entry.year]){
+        publicationsByYear[entry.year] = [];
+    }
+
+    publicationsByYear[entry.year].push(entry.title);
+
+    //console.log(publicationsByYear[entry.year])
+
+    $('#table-view-data-publications tr:last').after('<tr><td>'+entry.year+'</td><td>'+entry.title+"<br><small><em>"+getAuthorString(entry)+'</em></small></td></tr>');
 }
 
 function generateUniversityIds(entry){
@@ -474,7 +511,7 @@ function plotListOfPublications(series, years){
              shadow: false
          },
          tooltip: {
-             pointFormat: 'Number of Papers: {point.stackTotal}'
+             pointFormat: 'Number of Papers: {point.stackTotal}',
          },
          plotOptions: {
              column: {
@@ -492,6 +529,15 @@ function plotListOfPublications(series, years){
                              return null;
                          }
                     }
+                 }
+             }
+         },
+         exporting: {
+             buttons: {
+                 customButton: {
+                     x: -40,
+                     onclick: viewDataPublications,
+                     text: "View data"
                  }
              }
          },
@@ -699,6 +745,9 @@ function plotNumberOfPublicationsByApplicationAndYear(entries){
         title: {
             text: 'Number of Publications by Year and Application'
         },
+        subtitle: {
+			text: 'An Estimate'
+		},
         xAxis: {
             gridLineWidth: 1,
 			min: 2009,
@@ -709,7 +758,7 @@ function plotNumberOfPublicationsByApplicationAndYear(entries){
         },
 		yAxis: {
 			min: 0,
-            max: 14,
+            max: 13,
             tickInterval: 1,
 			title: {
 				text: ""
