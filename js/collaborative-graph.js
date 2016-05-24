@@ -1,4 +1,4 @@
-var diameter = 560,
+var diameter = 500,
     radius = diameter / 2,
     innerRadius = radius - 100;
 
@@ -17,9 +17,9 @@ var line = d3.svg.line.radial()
 
 var svg = d3.select("#chart-collaborative").append("svg")
     .attr("width", diameter+"px")
-    .attr("height", 510+ "px")
+    .attr("height", 610+ "px")
     .append("g")
-    .attr("transform", "translate(" + radius + "," + 260 + ")");
+    .attr("transform", "translate(" + radius + "," + 300 + ")");
 
 var link = svg.append("g").selectAll(".link"),
     node = svg.append("g").selectAll(".node");

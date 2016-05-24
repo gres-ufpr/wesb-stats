@@ -104,13 +104,9 @@ function hideSpin(){
 }
 
 function messageSpin(text){
-	$(".panel-loading span").text(text);
+	$("#panel-loading-text").text(text);
 
 	console.log(text);
-}
-
-function showCredits(){
-	$(".credits").removeClass("hide");
 }
 
 function viewDataAuthor(event){
@@ -175,7 +171,7 @@ function success(response){
 
     hideSpin();
 
-	showCredits();
+	$(".credits").removeClass("hide");
 
 	$("#collaboration-network").removeClass("hide");
 
@@ -842,7 +838,7 @@ function plotNumberOfPublicationsByUniversityAndYear(entries){
             }
         },
 		yAxis: {
-			min: 0,
+			min: -1,
             max: universityId,
             tickInterval: 1,
 			title: {
