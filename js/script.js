@@ -9,6 +9,7 @@ var rankingByApplications = [];
 var rankingByIES = [];
 var rankingByApplicationAndYear = [];
 var rankingByUniversityAndYear = [];
+var rankingByUniversityAndApplication = [];
 var collaborationNetwork = {};
 var collaborationNetworkSize = {};
 
@@ -168,6 +169,7 @@ function success(response){
 	plotNumberOfPublicationsByUniversities(entries);
 	plotCollaborationNetwork(collaborationNetwork, collaborationNetworkSize);
 	plotNumberOfPublicationsByUniversityAndYear(entries);
+    plotNumberOfPublicationsByUniversityAndApplication(entries);
 
     hideSpin();
 
@@ -344,6 +346,7 @@ function processEntry(entry){
     generateRankingByApplications(entry);
 	generateRankingByApplicationAndYear(entry);
 	generateRankingByUniversityAndYear(entry);
+    generateRankingByUniversityAndApplication(entry);
 	generateRankingByUniversities(entry);
 	generateCollaborativeGraph(entry);
 }
@@ -436,6 +439,18 @@ function generateRankingByUniversityAndYear(entry){
 
 	$.each(ieses, function (index, ies) {
 		insertOrUpdate(rankingByUniversityAndYear, entry.year + "_" + universities[ies]);
+	});
+}
+
+function generateRankingByUniversityAndApplication(entry){
+	if(entry.ies == undefined || entry.ies == ""){
+		return;
+	}
+
+    var ieses = getUniqueUniversities(entry);
+
+	$.each(ieses, function (index, ies) {
+		insertOrUpdate(rankingByUniversityAndApplication, entry.application + "_" + ies);
 	});
 }
 
@@ -867,6 +882,99 @@ function plotNumberOfPublicationsByUniversityAndYear(entries){
         },
         series: [{
 			color: "#f7a35c",
+            data: data
+        }]
+    });
+}
+
+function plotNumberOfPublicationsByUniversityAndApplication(entries){
+
+    var data = [];
+
+	var allApplications = getApplicationTypes();
+
+    var applicationTypes = {};
+
+	$.each(allApplications , function(key, entry){
+		applicationTypes[entry] = key;
+	});
+
+    var types = {};
+    var iesTypes = {};
+
+	$.each(universities , function(key, entry){
+		types[key] = entry;
+        iesTypes[entry] = key;
+	});
+
+    $.each(rankingByUniversityAndApplication, function(key, entry){
+		var split = entry.label.split("_");
+        data.push({x: parseInt(types[split[1]]), y: parseInt(allApplications[split[0]]), z: entry.count, name: 'BE', country: 'Belgium'});
+	});
+
+    $('#chart-university-application').highcharts({
+        chart: {
+            type: 'bubble',
+            plotBorderWidth: 1,
+            zoomType: 'xy',
+			height: 500
+        },
+        legend: {
+            enabled: false
+        },
+        title: {
+            text: 'Number of Publications by Application and University'
+        },
+		subtitle: {
+			text: 'An Estimate'
+		},
+        tooltip: {
+            pointFormat: 'Number of Papers: {point.z}',
+        },
+        xAxis: {
+            gridLineWidth: 1,
+			//min: 1,
+            tickInterval: 1,
+			labels: {
+                rotation: -45,
+                formatter: function() {
+					if(this.value <=0 || this.value >= iesTypes.length){
+						return "";
+					}
+					return iesTypes[this.value];
+				}
+            }
+        },
+		yAxis: {
+			min: 0,
+            max: 13,
+            tickInterval: 1,
+			title: {
+				text: ""
+			},
+			labels: {
+                formatter: function() {
+					if(this.value <=0 || this.value >= applicationTypes.length){
+						return "";
+					}
+					return applicationTypes[this.value];
+				}
+            },
+
+        },
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.z}'
+                }
+            }
+        },
+		credits: {
+            enabled: false
+        },
+        series: [{
+			color: "#8085e9",
             data: data
         }]
     });
