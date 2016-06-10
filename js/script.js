@@ -1,99 +1,35 @@
 var url = "https://dl.dropbox.com/s/in9z84yv8kb28lb/references.bib?dl=1";
-var spinner;
-var maxResults = 30;
-var universityId = 0;
-var universities = {};
-var rankingByCountries = [];
-var rankingByAuthors = [];
-var rankingByApplications = [];
-var rankingByIES = [];
-var rankingByApplicationAndYear = [];
-var rankingByUniversityAndYear = [];
-var rankingByUniversityAndApplication = [];
+
+var rankingByAuthor = [];
+var rankingByApplication = [];
+var rankingByAlgorithm = [];
+var rankingByUniversity = [];
+var rankingByLanguage = [];
+var rankingByYear = [];
+
+var rankingByApplicationYear = [];
+var rankingByApplicationUniversity = [];
+var rankingByUniversityYear = [];
+var rankingByAlgorithmUniversity = [];
+var rankingByAlgorithmYear = [];
+
 var collaborationNetwork = {};
 var collaborationNetworkSize = {};
-
-var publicationsByYear = {};
-
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.split(search).join(replacement);
-};
-
-function uniques(arr) {
-    var a = [];
-    for (var i=0, l=arr.length; i<l; i++)
-        if (a.indexOf(arr[i]) === -1 && arr[i] !== '')
-            a.push(arr[i]);
-    return a;
-}
-
-function sort(array){
-	array.sort(function(a, b){
-        var diff = parseInt(a.count) - parseInt(b.count);
-
-        if(diff == 0){
-            return 0;
-        }else if(diff > 0){
-            return -1;
-        }else if(diff < 0){
-            return 1;
-        }
-    });
-}
-
-function insertOrUpdate(array, label){
-	var index = containts(array, label);
-
-	if(index != -1){
-		array[index].count++;
-	}else{
-		array.push({"label": label, "count": 1});
-	}
-}
-
-function containts(array, label){
-	for(var i=0;i<array.length;i++){
-		if(array[i].label.trim() == label.trim()){
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-function getUniqueUniversities(entry){
-	var map = {};
-
-	var universities = entry.ies.split("and");
-
-	$.each(universities, function (index, ieses) {
-		var splitIes = ieses.split(",");
-
-		$.each(splitIes, function (index, ies) {
-			map[ies.trim()] = {};
-		});
-	});
-
-	var ies = [];
-
-	for(var i in map){
-		ies.push(i);
-	}
-
-	return ies;
-}
 
 function appendRow(tableId, columns){
 	var row = "<tr>";
 
 	$.each(columns, function(key, column){
-		row += "<td>CONTENT</td>".replace("CONTENT", column);
+        if(key == 0){
+            row += "<td width='50px'>CONTENT</td>".replace("CONTENT", column);
+        }else{
+            row += "<td>CONTENT</td>".replace("CONTENT", column);
+        }
 	});
 
 	row += "</tr>";
 
-	$(tableId+" tr:last").after(row);
+	$(tableId+" > tbody").append(row);
 }
 
 function showSpin(){
@@ -110,24 +46,22 @@ function messageSpin(text){
 	console.log(text);
 }
 
-function viewDataAuthor(event){
-	$('#modal-view-data-author').modal('show');
-}
+function viewData(title, field, ranking){
+    return function(){
+        // Remove all rows before adding new rows
+        $("#table-view-data tbody").empty();
 
-function viewDataPublications(event){
-	$('#modal-view-data-publications').modal('show');
-}
+        $("#modal-view-data-title").html(title)
+        $("#modal-view-data-field").html(field);
 
-function viewDataApplication(){
-	$('#modal-view-data-application').modal('show');
-}
+        var id = 1;
 
-function viewDataJournal(){
-	$('#modal-view-data-journals').modal('show');
-}
+        $.each(ranking, function(index, value){
+            appendRow("#table-view-data", [(id++), value.label.replace("###"," "), value.count]);
+        });
 
-function viewDataUniversity(){
-	$('#modal-view-data-university').modal('show');
+        $('#modal-view-data').modal('show');
+    };
 }
 
 function loadBibtextFileFromUrl(){
@@ -155,21 +89,24 @@ function success(response){
 
     var entries = parse(response);
 
-    var years = getYears(entries);
+    messageSpin("Ploting charts...");
 
-    var yearSeries = getYearSeries(entries, years);
+	plotUsingColumns("#chart-year", entries, rankingByYear, "Year", true);
+	plotUsingColumns("#chart-university", entries, rankingByUniversity, "University", false);
 
-	messageSpin("Ploting chart...");
+    plotUsingHorizontalColumns("#chart-author", entries, rankingByAuthor, "Author");
 
-    plotListOfPublications(yearSeries, years);
+	plotUsingPie("#chart-application", entries, rankingByApplication, "Application");
+	plotUsingPie("#chart-algorithm", entries, rankingByAlgorithm, "Algorithm");
+	plotUsingPie("#chart-language", entries, rankingByLanguage, "Language");
 
-    plotNumberOfPublicationsByAuthor(entries);
-    plotNumberOfPublicationsByApplication(entries);
-	plotNumberOfPublicationsByApplicationAndYear(entries);
-	plotNumberOfPublicationsByUniversities(entries);
+    plotTwoCategories("#chart-application-year", entries, rankingByApplicationYear, true, "Application", "Year", "#d95978");
+    plotTwoCategories("#chart-application-university", entries, rankingByApplicationUniversity, true, "Application", "University");
+    plotTwoCategories("#chart-university-year", entries, rankingByUniversityYear, false, "University", "Year");
+	plotTwoCategories("#chart-algorithm-year", entries, rankingByAlgorithmYear, false, "Algorithm", "Year");
+	plotTwoCategories("#chart-algorithm-university", entries, rankingByAlgorithmUniversity, false, "Algorithm", "University", "#787cda");
+
 	plotCollaborationNetwork(collaborationNetwork, collaborationNetworkSize);
-	plotNumberOfPublicationsByUniversityAndYear(entries);
-    plotNumberOfPublicationsByUniversityAndApplication(entries);
 
     hideSpin();
 
@@ -181,119 +118,21 @@ function success(response){
 }
 
 function getApplicationTypes(){
-	return {
-		"Coding Tools and Techniques": "1",
-		"Design Tools and Techniques": "2",
-		"Distributed Artificial Intelligence": "3",
-		"Distribution and Maintenance": "4",
-		"General Aspects and Survey": "5",
-		"Management": "6",
-		"Metrics": "7",
-		"Network Protocols": "8",
-		"Requirements/Specifications": "9",
-		"Security and Protection": "10",
-		"Software/Program Verification": "11",
-		"Testing and Debugging": "12",
-		//"Testing and Debugging, General Aspects and Survey": "13",
-	};
+    // Based on SWEBok
+    return {
+        "Software Requirements": "1",
+        "Software Design": "2",
+        "Software Construction": "3",
+        "Software Testing": "4",
+        "Software Maintenance": "5",
+        "Software Configuration Management": "6",
+        "Software Engineering Management": "7",
+        "Software Engineering Process": "8",
+        "Software Engineering Models and Methods": "9",
+        "Software Quality": "10",
+        "Introductory/Survey": "11",
+    };
 }
-
-function getApplications(application){
-	return getApplicationTypes()[application];
-}
-
-/** Convert the entry type to readable text */
-function getEntryType(entryType){
-     // types used for the different types of entries
-     var types = {
-         'article': 'Journal',
-         'book': 'Book',
-         'booklet': 'Booklet',
-         'conference': 'Conference',
-         'inbook': 'Book Chapter',
-         'incollection': 'In Collection',
-         'inproceedings': 'Conference',
-         'manual': 'Manual',
-         'mastersthesis': "Masters Thesis",
-         'misc': 'Misc',
-         'phdthesis': 'PhD Thesis',
-         'proceedings': 'Conference Proceeding',
-         'techreport': 'Technical Report',
-         'unpublished': 'Unpublished'
-     };
-
-     return types[entryType];
-}
-
-function getYearSeries(entries, years){
-
-    var stats = {};
-
-    $.each(entries, function(key, entry) {
-        if(!stats[entry.entryType]){
-            stats[entry.entryType] = {};
-        }
-
-        if(!stats[entry.entryType][entry.year]){
-            stats[entry.entryType][entry.year] = 1;
-        }else{
-            stats[entry.entryType][entry.year]++;
-        }
-    });
-
-    var series = [];
-
-    for (s in stats){
-
-        var data = [];
-
-        $.each(years, function(key, year){
-            data.push(stats[s][year] || 0);
-        });
-
-        // Add only the series that have at least a value
-        var sum = data.reduce(function(a, b){return a+b;});
-
-        if(sum > 0){
-            series.push({name: getEntryType(s), data:data});
-        }
-    }
-
-    return series;
-}
-
-/** Return only the years of the entries */
-function getYears(entries){
-    var years = [];
-
-    $.each(entries, function(key, entry){
-        if(years.indexOf(entry.year) == -1){
-            // Do not add the 'To Appear' from chart
-            if(entry.year && entry.year !== ""){
-                years.push(entry.year);
-            }
-        }
-    });
-
-    // Sort the Array
-    years.sort(function(a, b){
-        if(a == "To appear"){
-            a = 5000;
-        }
-
-        var diff = parseInt(a) - parseInt(b);
-
-        if(diff == 0){
-            return 0;
-        }else if(diff > 0){
-            return 1;
-        }else if(diff < 0){
-            return -1;
-        }
-    });
-
-    return years;
-};
 
 function parse(content){
     messageSpin("Parsing...");
@@ -307,7 +146,7 @@ function parse(content){
     // Parse the bibtext file
     bibtex.parse();
 
-    messageSpin("Done");
+    messageSpin("Processing the entries...");
 
      // Array with all entries
     var entries = [];
@@ -324,31 +163,24 @@ function parse(content){
     return entries;
 }
 
-function getAuthorString(entry){
-    var str = "";
-
-    $.each(entry.author, function (index, value) {
-		str += value.last.trim()+",";
-	});
-
-    var lastIndex = str.lastIndexOf(",");
-
-    return str.substring(0, lastIndex).replaceAll(","," and ");
-}
-
 function processEntry(entry){
-    // Call TRIM function in the all fields
     trimAllFields(entry);
 
-    generatePublications(entry);
-	generateUniversityIds(entry);
     generateRankingByAuthors(entry);
-    generateRankingByApplications(entry);
-	generateRankingByApplicationAndYear(entry);
-	generateRankingByUniversityAndYear(entry);
-    generateRankingByUniversityAndApplication(entry);
-	generateRankingByUniversities(entry);
-	generateCollaborativeGraph(entry);
+
+    generateRankingBy(entry, rankingByYear, "year");
+    generateRankingBy(entry, rankingByApplication, "custom_application");
+    generateRankingBy(entry, rankingByAlgorithm, "custom_algorithm");
+    generateRankingBy(entry, rankingByUniversity, "custom_ies");
+	generateRankingBy(entry, rankingByLanguage, "custom_language");
+
+    generateRankingForTwoCategories(entry, rankingByApplicationYear, "year", "custom_application");
+    generateRankingForTwoCategories(entry, rankingByApplicationUniversity, "custom_ies", "custom_application");
+    generateRankingForTwoCategories(entry, rankingByUniversityYear, "year", "custom_ies");
+	generateRankingForTwoCategories(entry, rankingByAlgorithmYear, "year", "custom_algorithm");
+	generateRankingForTwoCategories(entry, rankingByAlgorithmUniversity, "custom_ies", "custom_algorithm");
+
+    generateCollaborativeGraph(entry);
 }
 
 function trimAllFields(entry){
@@ -359,105 +191,49 @@ function trimAllFields(entry){
     }
 }
 
-function generatePublications(entry){
-
-    if(! publicationsByYear[entry.year]){
-        publicationsByYear[entry.year] = [];
-    }
-
-    publicationsByYear[entry.year].push(entry.title);
-
-    //console.log(publicationsByYear[entry.year])
-
-    $('#table-view-data-publications tr:last').after('<tr><td>'+entry.year+'</td><td>'+entry.title+"<br><small><em>"+getAuthorString(entry)+'</em></small></td></tr>');
-}
-
-function generateUniversityIds(entry){
-	var uni = entry.ies.split("and");
-
-	$.each(uni, function (index, ieses) {
-		var splitIes = ieses.split(",");
-
-		$.each(splitIes, function (index, ies) {
-			if( ! universities[ies.trim()]){
-				universities[ies.trim()] = universityId++;
-			}
-		});
-	});
-}
-
-function generateRankingByUniversities(entry){
-	if(entry.ies == undefined || entry.ies == ""){
-		return;
-	}
-
-	var map = {};
-
-	var universities = entry.ies.split("and");
-
-	$.each(universities, function (index, ieses) {
-		var splitIes = ieses.split(",");
-
-		$.each(splitIes, function (index, ies) {
-			if( ! map[ies.trim()]){
-				map[ies.trim()] = {};
-			}
-		});
-	});
-
-	for(var i in map){
-		insertOrUpdate(rankingByIES, i);
-	}
-}
-
 function generateRankingByAuthors(entry){
     $.each(entry.author, function (index, value) {
-		insertOrUpdate(rankingByAuthors, value.last.trim());
+		Arrays.insertOrUpdateLabel(rankingByAuthor, value.last.trim());
 	});
 }
 
-function generateRankingByApplications(entry){
-    insertOrUpdate(rankingByApplications, entry.application)
-}
-
-function generateRankingByApplicationAndYear(entry){
-	if(entry.application == undefined || entry.application == ""){
+function generateRankingBy(entry, ranking, property){
+    if( ! entry[property]){
 		return;
 	}
 
-	var index = getApplications(entry.application);
+    var array = Arrays.splitAndTrim(entry[property], " and ");
 
-	insertOrUpdate(rankingByApplicationAndYear, entry.year + "_" + index);
+    array = Arrays.unique(array);
+
+    $.each(array, function (index, value) {
+        Arrays.insertOrUpdateLabel(ranking, value);
+    });
 }
 
-function generateRankingByUniversityAndYear(entry){
-	if(entry.ies == undefined || entry.ies == ""){
+function generateRankingForTwoCategories(entry, ranking, propOne, propTwo){
+    if( ! entry[propOne] || ! entry[propTwo]){
 		return;
 	}
 
-	var ieses = getUniqueUniversities(entry);
+    var arraysOne = Arrays.splitAndTrim(entry[propOne], " and ");
+    var arraysTwo = Arrays.splitAndTrim(entry[propTwo], " and ");
 
-	$.each(ieses, function (index, ies) {
-		insertOrUpdate(rankingByUniversityAndYear, entry.year + "_" + universities[ies]);
-	});
-}
+    arraysOne = Arrays.unique(arraysOne);
+    arraysTwo = Arrays.unique(arraysTwo);
 
-function generateRankingByUniversityAndApplication(entry){
-	if(entry.ies == undefined || entry.ies == ""){
-		return;
-	}
-
-    var ieses = getUniqueUniversities(entry);
-
-	$.each(ieses, function (index, ies) {
-		insertOrUpdate(rankingByUniversityAndApplication, entry.application + "_" + ies);
-	});
+    $.each(arraysOne, function (index, arrayOne) {
+        $.each(arraysTwo, function (index, arrayTwo) {
+            Arrays.insertOrUpdateLabel(ranking, arrayOne + "###" + arrayTwo);
+        });
+    });
 }
 
 function generateCollaborativeGraph(entry){
 
-	var universities = getUniqueUniversities(entry);
+	var universities = Arrays.splitAndTrim(entry.custom_ies, " and ");
 
+    universities = Arrays.unique(universities);
 
 	$.each(universities, function (index, author1) {
 
@@ -479,488 +255,219 @@ function generateCollaborativeGraph(entry){
 	});
 
 	for(var prop in collaborationNetwork){
-		collaborationNetwork[prop].children = uniques(collaborationNetwork[prop].children);
+		collaborationNetwork[prop].children = Arrays.unique(collaborationNetwork[prop].children);
 	}
 }
 
-function plotListOfPublications(series, years){
-    $("#chart-publication").highcharts({
-         chart: {
-             type: 'column',
-             marginTop: 100,
-             height: 600
-         },
-         title: {
-             text: "List of Publications"
-         },
-         xAxis: {
-             categories: years
-         },
-         yAxis: {
-             min: 0,
-             title: {
-                 text: "Number of Papers"
-             },
-             stackLabels: {
-                 enabled: true,
-                 style: {
-                     fontWeight: 'bold',
-                     color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                 }
-             }
-         },
-         legend: {
-             enabled: false,
-             align: 'right',
-             x: -30,
-             verticalAlign: 'top',
-             y: 30,
-             floating: true,
-             backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-             borderColor: '#CCC',
-             borderWidth: 1,
-             shadow: false
-         },
-         tooltip: {
-             pointFormat: 'Number of Papers: {point.stackTotal}',
-         },
-         plotOptions: {
-             column: {
-                 stacking: 'normal',
-                 dataLabels: {
-                     enabled: true,
-                     color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-                     style: {
-                         textShadow: '0 0 3px black'
-                     },
-                     formatter: function() {
-                         if (this.y !== 0) {
-                             return this.y;
-                         } else {
-                             return null;
-                         }
-                    }
-                 }
-             }
-         },
-         exporting: {
-             buttons: {
-                 customButton: {
-                     x: -40,
-                     onclick: viewDataPublications,
-                     text: "View data"
-                 }
-             }
-         },
-         credits: {
-             enabled: false
-         },
-         series: series
-     });
-}
+function plotUsingHorizontalColumns(elementId, entries, ranking, categoryTitle){
 
-function plotNumberOfPublicationsByAuthor(entries){
+	var title = "Number of Publications by " + categoryTitle;
 
-	sort(rankingByAuthors);
+	messageSpin("Ploting " + title + "...");
+
+	Arrays.sortRankingByCount(ranking);
 
     var categories = [];
 
-    var series = [];
-
     var data = [];
 
-	$.each(rankingByAuthors, function(key, entry){
-
-	    if(data.length != maxResults){
+	$.each(ranking, function(key, entry){
+	    if(data.length != 15){
 	        categories.push(entry.label);
 	        data.push(entry.count);
 		}
-
-		appendRow("#table-view-data-author", [(key+1), entry.label, entry.count]);
 	});
 
-    series.push({name: "Number of Papers", data: data});
+    var series = [{name: "Number of Papers", data: data, color:"#90ed7d"}];
 
-	var options = {
-		elementId: "#chart-author",
+    var options = {
+		elementId: elementId,
 		categories: categories,
 		series: series,
-		title: "Number of Publications by Author",
-		viewData: viewDataAuthor
+		title: title,
+        subtitle: " ",
+		viewData: viewData(title, categoryTitle, ranking),
 	};
 
-	plotBasicBarChart(options);
+	plotHorizontalColumnChart(options);
 }
 
-function plotNumberOfPublicationsByApplication(entries){
+function plotUsingPie(elementId, entries, ranking, categoryTitle){
+
+	var title = "Number of Publications by " + categoryTitle;
+
+	messageSpin("Ploting " + title + "...");
+
     var data = [];
 
     var sumOthers = 0;
 
-	// Sort the Array
-    sort(rankingByApplications);
+	Arrays.sortRankingByCount(ranking);
 
-    $.each(rankingByApplications, function(key, entry){
-        if(entry.count / entries.length< 0.02){
-            sumOthers += entry.count;
-        }else if(entry.label == ""){
-            // data.push({name: "No Informed", y: entry.count});
-        }else{
-            data.push({name: entry.label.replace(" and "," and <br>"), y: entry.count});
-        }
-
-		var label = (entry.label === "")?"No Informed": entry.label;
-
-		$('#table-view-data-application tr:last').after('<tr><td>'+(key+1)+'</td><td>'+label+'</td><td>'+entry.count+'</td></tr>');
+    $.each(ranking, function(key, entry){
+        data.push({name: entry.label, y: entry.count});
     });
 
-    data.push({name: "Others", y: sumOthers});
+    var options = {
+		elementId: elementId,
+		data: data,
+		title: title,
+		viewData: viewData(title, categoryTitle, ranking),
+	};
 
-    $('#chart-application').highcharts({
-        chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            type: 'pie',
-            height: 500
-        },
-        title: {
-            text: "Number of Publications by Application"
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.y}</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                    style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                    }
-                }
-            }
-        },
-        credits: {
-            enabled: false
-        },
-		exporting: {
-            buttons: {
-                customButton: {
-                    x: -40,
-                    onclick: viewDataApplication,
-                    text: "View data"
-                }
-            }
-        },
-        series: [{
-            name: 'Number of Papers',
-            colorByPoint: true,
-            data: data
-        }]
-    });
+    plotPieChart(options);
 }
 
-function plotNumberOfPublicationsByUniversities(entries){
-	sort(rankingByIES);
+function plotUsingColumns(elementId, entries, ranking, categoryTitle, countSorted){
 
-	var categories = [];
+	var title = "Number of Publications by " + categoryTitle;
 
-	var data = [];
+	messageSpin("Ploting " + title + "...");
 
-	$.each(rankingByIES, function(key, entry){
-		categories.push(entry.label)
-		data.push(entry.count);
-
-		appendRow("#table-view-data-university", [(key+1), entry.label, entry.count]);
-    });
-
-	var series = [{name:"Number of Papers", data:data, color: "#90ed7d"}];
-
-    $('#chart-university').highcharts({
-        chart: {
-            type: 'column',
-            height: 500
-        },
-        title: {
-            text: "Number of Papers by University"
-        },
-		subtitle: {
-			text: 'An Estimate'
-		},
-        xAxis: {
-			categories:categories,
-            crosshair: true
-        },
-		yAxis: {
-            min: 0,
-			tickInterval: 1,
-            title: {
-                text: ''
-            }
-        },
-		legend: {
-            enabled: false
-        },
-        plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
-            }
-        },
-        credits: {
-            enabled: false
-        },
-		exporting: {
-            buttons: {
-                customButton: {
-                    x: -40,
-                    onclick: viewDataUniversity,
-                    text: "View data"
-                }
-            }
-        },
-		series: series,
-    });
-}
-
-function plotNumberOfPublicationsByApplicationAndYear(entries){
-
-	var data = [];
-
-	var applicationTypes = getApplicationTypes();
-
-	var types = {};
-
-	$.each(applicationTypes , function(key, entry){
-		types[entry] = key;
-	});
-
-	$.each(rankingByApplicationAndYear, function(key, entry){
-		var split = entry.label.split("_");
-		data.push({x: parseInt(split[0]), y: parseInt(split[1]), z: entry.count, name: 'BE', country: 'Belgium'});
-	});
-
-	$('#chart-publication-application').highcharts({
-        chart: {
-            type: 'bubble',
-            plotBorderWidth: 1,
-            zoomType: 'xy',
-			height: 500
-        },
-        legend: {
-            enabled: false
-        },
-        title: {
-            text: 'Number of Publications by Year and Application'
-        },
-        subtitle: {
-			text: 'An Estimate'
-		},
-        xAxis: {
-            gridLineWidth: 1,
-			min: 2009,
-            tickInterval: 1,
-			labels: {
-                rotation: -45,
-            }
-        },
-		yAxis: {
-			min: 0,
-            max: 13,
-            tickInterval: 1,
-			title: {
-				text: ""
-			},
-			labels: {
-                formatter: function() {
-					if(this.value <=0 || this.value >=types.length){
-						return "";
-					}
-					return types[this.value];
-				}
-            },
-
-        },
-        tooltip: {
-            pointFormat: 'Number of Papers: {point.z}',
-        },
-        plotOptions: {
-            series: {
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.z}'
-                }
-            }
-        },
-		credits: {
-            enabled: false
-        },
-        series: [{
-            data: data
-        }]
-    });
-}
-
-function plotNumberOfPublicationsByUniversityAndYear(entries){
-
-	var data = [];
-
-	var applicationTypes = [];
-
-	for(var i in universities){
-		applicationTypes.push(i);
+	if(countSorted){
+		Arrays.sortRankingByLabel(ranking);
+	}else{
+		Arrays.sortRankingByCount(ranking);
 	}
 
-	var types = {};
+    var categories = [];
 
-	$.each(universities , function(key, entry){
-		types[entry] = key;
-	});
+	var data = [];
 
-	$.each(rankingByUniversityAndYear, function(key, entry){
-		var split = entry.label.split("_");
-		data.push({x: parseInt(split[0]), y: parseInt(split[1]), z: entry.count, name: 'BE', country: 'Belgium'});
-	});
-
-	$('#chart-university-year').highcharts({
-        chart: {
-            type: 'bubble',
-            plotBorderWidth: 1,
-            zoomType: 'xy',
-			height: 500
-        },
-        legend: {
-            enabled: false
-        },
-        title: {
-            text: 'Number of Publications by Year and University'
-        },
-		subtitle: {
-			text: 'An Estimate'
-		},
-        tooltip: {
-            pointFormat: 'Number of Papers: {point.z}',
-        },
-        xAxis: {
-            gridLineWidth: 1,
-			min: 2009,
-            tickInterval: 1,
-			labels: {
-                rotation: -45,
-            }
-        },
-		yAxis: {
-			min: -1,
-            max: universityId,
-            tickInterval: 1,
-			title: {
-				text: ""
-			},
-			labels: {
-                formatter: function() {
-					if(this.value <=0 || this.value >= types.length){
-						return "";
-					}
-					return types[this.value];
-				}
-            },
-
-        },
-        plotOptions: {
-            series: {
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.z}'
-                }
-            }
-        },
-		credits: {
-            enabled: false
-        },
-        series: [{
-			color: "#f7a35c",
-            data: data
-        }]
+	$.each(ranking, function(key, entry){
+		categories.push(entry.label)
+		data.push(entry.count);
     });
+
+	var series = [{name:"Number of Papers", data:data, color: "#7cb5ec"}];
+
+    var options = {
+		elementId: elementId,
+		categories: categories,
+		series: series,
+		title: title,
+        subtitle: " ",
+        legendEnabled: false,
+		viewData: viewData(title, categoryTitle, ranking),
+	};
+
+	plotColumnChar(options);
 }
 
-function plotNumberOfPublicationsByUniversityAndApplication(entries){
+function plotTwoCategories(elementId, entries, ranking, isApplicationCategory, titleOne, titleTwo, color){
+
+	color = color || "#f6a25c";
+
+	var categoryTitle = titleOne + " and " + titleTwo;
+
+	var title = "Number of Publications by " + categoryTitle;
+
+	messageSpin("Ploting " + title + "...");
+
+    isApplicationCategory = isApplicationCategory || false;
+
+    var categoryOne = [];
+    var categoryTwo = [];
+
+	$.each(ranking, function(key, entry){
+        var split = entry.label.split("###");
+
+        var cOne = split[0];
+        var cTwo = split[1];
+
+        if(categoryOne.indexOf(cOne) === -1)
+            categoryOne.push(cOne);
+
+        if(categoryTwo.indexOf(cTwo) === -1)
+            categoryTwo.push(cTwo);
+	});
+
+    if(isApplicationCategory){
+        var applications = getApplicationTypes();
+        for(var index in applications){
+            if(categoryTwo.indexOf(index) === -1){
+                categoryTwo.push(index);
+            }
+        }
+    }
+
+    categoryOne = categoryOne.sort();
+    categoryTwo = categoryTwo.sort();
 
     var data = [];
 
-	var allApplications = getApplicationTypes();
+    $.each(ranking, function(key, entry){
+		var split = entry.label.split("###");
 
-    var applicationTypes = {};
-
-	$.each(allApplications , function(key, entry){
-		applicationTypes[entry] = key;
+        data.push({
+            x: parseInt(categoryOne.indexOf(split[0])),
+            y: parseInt(categoryTwo.indexOf(split[1])),
+            z: entry.count,
+        });
 	});
 
-    var types = {};
-    var iesTypes = {};
+	var series = [{ color: color, data: data}];
 
-	$.each(universities , function(key, entry){
-		types[key] = entry;
-        iesTypes[entry] = key;
-	});
+	var options = {
+		elementId: elementId,
+		series: series,
+		title: title,
+		categoryOne: categoryOne,
+		categoryTwo: categoryTwo,
+		categoryTitle: categoryTitle,
+        subtitle: " ",
+        legendEnabled: false,
+		viewData: viewData(title, categoryTitle, ranking),
+	};
 
-    $.each(rankingByUniversityAndApplication, function(key, entry){
-		var split = entry.label.split("_");
-        data.push({x: parseInt(types[split[1]]), y: parseInt(allApplications[split[0]]), z: entry.count, name: 'BE', country: 'Belgium'});
-	});
+	plotBubbleChart(options)
+}
 
-    $('#chart-university-application').highcharts({
+function plotBubbleChart(options){
+	$(options.elementId).highcharts({
         chart: {
             type: 'bubble',
             plotBorderWidth: 1,
             zoomType: 'xy',
-			height: 500
+			height: options.height || 500,
         },
         legend: {
             enabled: false
         },
         title: {
-            text: 'Number of Publications by Application and University'
+            text: options.title
         },
-		subtitle: {
-			text: 'An Estimate'
+        subtitle: {
+			text: options.subtitle || 'An Estimate'
 		},
-        tooltip: {
-            pointFormat: 'Number of Papers: {point.z}',
-        },
         xAxis: {
+            min: -1,
             gridLineWidth: 1,
-			//min: 1,
-            tickInterval: 1,
+			tickInterval: 1,
 			labels: {
                 rotation: -45,
                 formatter: function() {
-					if(this.value <=0 || this.value >= iesTypes.length){
-						return "";
-					}
-					return iesTypes[this.value];
-				}
+                    return options.categoryOne[this.value];
+				},
             }
         },
 		yAxis: {
-			min: 0,
-            max: 13,
-            tickInterval: 1,
+            min: -1,
+			tickInterval: 1,
 			title: {
 				text: ""
 			},
 			labels: {
                 formatter: function() {
-					if(this.value <=0 || this.value >= applicationTypes.length){
-						return "";
-					}
-					return applicationTypes[this.value];
+                    return options.categoryTwo[this.value];
 				}
             },
 
+        },
+        tooltip: {
+			formatter: function(){
+				return "<b>"+options.categoryTwo[this.point.y]+" and "+options.categoryOne[this.point.x] + "</b><br> Number of Papers: "+this.point.z;
+			}
         },
         plotOptions: {
             series: {
@@ -970,22 +477,28 @@ function plotNumberOfPublicationsByUniversityAndApplication(entries){
                 }
             }
         },
+		exporting: {
+            buttons: {
+                customButton: {
+                    x: -40,
+                    onclick: options.viewData,
+                    text: "View data"
+                }
+            }
+        },
 		credits: {
             enabled: false
         },
-        series: [{
-			color: "#8085e9",
-            data: data
-        }]
+        series: options.series
     });
 }
 
-function plotBasicBarChart(options){
+function plotHorizontalColumnChart(options){
 
 	$(options.elementId).highcharts({
         chart: {
             type: 'bar',
-            height: options.height || 700
+            height: options.height || 500,
         },
         title: {
             text: options.title
@@ -1041,6 +554,135 @@ function plotBasicBarChart(options){
             enabled: false
         },
         series: options.series
+    });
+}
+
+function plotColumnChar(options){
+    $(options.elementId).highcharts({
+         chart: {
+             type: 'column',
+             height: options.height || 500,
+         },
+         title: {
+             text: options.title
+         },
+         subtitle: {
+ 			text: options.subtitle || 'An Estimate'
+ 		 },
+         xAxis: {
+             categories: options.categories,
+         },
+         yAxis: {
+             min: 0,
+             title: {
+                 text: options.yAxisTitle || 'Number of Papers',
+             },
+             stackLabels: {
+                 enabled: true,
+                 style: {
+                     fontWeight: 'bold',
+                     color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                 }
+             }
+         },
+         legend: {
+             enabled: options.legendEnabled || false,
+             align: 'right',
+             x: -30,
+             verticalAlign: 'top',
+             y: 30,
+             floating: true,
+             backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+             borderColor: '#CCC',
+             borderWidth: 1,
+             shadow: false
+         },
+         tooltip: {
+             pointFormat: 'Number of Papers: {point.stackTotal}',
+         },
+         plotOptions: {
+             column: {
+                 stacking: 'normal',
+                 dataLabels: {
+                     enabled: true,
+                     color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                     style: {
+                         textShadow: '0 0 3px black'
+                     },
+                     formatter: function() {
+                         if (this.y !== 0) {
+                             return this.y;
+                         } else {
+                             return null;
+                         }
+                    }
+                 }
+             }
+         },
+         exporting: {
+             buttons: {
+                 customButton: {
+                     x: -40,
+                     onclick: options.viewData,
+                     text: "View data"
+                 }
+             }
+         },
+         credits: {
+             enabled: false
+         },
+         series: options.series
+     });
+}
+
+function plotPieChart(options){
+    $(options.elementId).highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie',
+            height: options.height || 500,
+        },
+        title: {
+            text: options.title
+        },
+        subtitle: {
+           text: options.subtitle || 'An Estimate'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        credits: {
+            enabled: false
+        },
+		exporting: {
+            buttons: {
+                customButton: {
+                    x: -40,
+                    onclick: options.viewData,
+                    text: "View data"
+                }
+            }
+        },
+        series: [{
+            name: 'Number of Papers',
+            colorByPoint: true,
+            data: options.data
+        }]
     });
 }
 

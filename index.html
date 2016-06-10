@@ -50,7 +50,6 @@
 
             <p>This page is maintained by <a target="_blank" href="http://www.github.com/thiagodnf">Thiago Nascimento</a>, Ph.D student at Federal University of Paraná</p>
 
-
             <div class="panel-loading hide">
                 <img id="panel-loading-logo" class="img-responsive" src="img/loading.gif"/>
                 <p id="panel-loading-text">Loading...</p>
@@ -61,13 +60,21 @@
             <div id="error"></div>
 
             <div id="charts">
-                <div class="chart" id="chart-publication"></div>
+                <div class="chart" id="chart-year"></div>
+
                 <div class="chart" id="chart-application"></div>
-                <div class="chart" id="chart-publication-application"></div>
+                <div class="chart" id="chart-application-year"></div>
+                <div class="chart" id="chart-application-university"></div>
+
                 <div class="chart" id="chart-author"></div>
                 <div class="chart" id="chart-university"></div>
                 <div class="chart" id="chart-university-year"></div>
-                <div class="chart" id="chart-university-application"></div>
+
+                <div class="chart" id="chart-algorithm"></div>
+                <div class="chart" id="chart-algorithm-year"></div>
+                <div class="chart" id="chart-algorithm-university"></div>
+                <div class="chart" id="chart-language"></div>
+
                 <div class="chart hide" id="collaboration-network">
                     <p class="chart-title">Collaboration Network</p>
                     <div style="text-align:center;" id="chart-collaborative"></div>
@@ -87,19 +94,19 @@
             </div>
         </div>
 
-        <div class="modal" id="modal-view-data-author" tabindex="-1" role="dialog" aria-labelledby="modal-change-location-label">
+        <div class="modal" id="modal-view-data" tabindex="-1" role="dialog" aria-labelledby="modal-view-data-title">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title" id="modal-change-location-label">Authors</h4>
+						<h4 class="modal-title" id="modal-view-data-title">Title</h4>
 					</div>
 					<div class="modal-body">
-						<table class="table table-striped" id="table-view-data-author">
+						<table class="table table-striped" id="table-view-data">
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Author</th>
-                                    <th>Publications</th>
+                                    <th id="modal-view-data-field">Value</th>
+                                    <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -113,89 +120,18 @@
 			</div>
 		</div>
 
-        <div class="modal" id="modal-view-data-application" tabindex="-1" role="dialog" aria-labelledby="modal-change-location-label">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title" id="modal-change-location-label">Applications</h4>
-					</div>
-					<div class="modal-body">
-						<table class="table table-striped" id="table-view-data-application">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Author</th>
-                                    <th>Publications</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-        <div class="modal" id="modal-view-data-university" tabindex="-1" role="dialog" aria-labelledby="modal-change-location-label">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title" id="modal-change-location-label">Universities</h4>
-					</div>
-					<div class="modal-body">
-						<table class="table table-striped" id="table-view-data-university">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>University</th>
-                                    <th>Publications</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-        <div class="modal" id="modal-view-data-publications" tabindex="-1" role="dialog" aria-labelledby="modal-change-location-label">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title" id="modal-change-location-label">Publications</h4>
-					</div>
-					<div class="modal-body">
-						<table class="table table-striped" id="table-view-data-publications">
-                            <thead>
-                                <tr>
-                                    <th>Year</th>
-                                    <th>Publication</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
+        <!-- default -->
         <script type="text/javascript" charset="utf8" src="js/jquery.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/d3.v3.min.js"></script>
+
+        <!-- highcharts -->
         <script type="text/javascript" charset="utf8" src="js/highcharts.js"></script>
         <script type="text/javascript" charset="utf8" src="js/highcharts-more.js"></script>
         <script type="text/javascript" charset="utf8" src="js/exporting.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/bootstrap.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/d3.v3.min.js"></script>
+
+        <!-- custom -->
+        <script type="text/javascript" charset="utf8" src="js/lib/arrays.js"></script>
         <script type="text/javascript" charset="utf8" src="js/BibTex-0.1.2.js"></script>
         <script type="text/javascript" charset="utf8" src="js/collaborative-graph.js"></script>
         <script type="text/javascript" charset="utf8" src="js/script.js"></script>
