@@ -1,5 +1,7 @@
 var url = "https://dl.dropbox.com/s/in9z84yv8kb28lb/references.bib?dl=1";
 
+var entries = {};
+
 var rankingByAuthor = [];
 var rankingByApplication = [];
 var rankingByAlgorithm = [];
@@ -7,20 +9,21 @@ var rankingByUniversity = [];
 var rankingByLanguage = [];
 var rankingByYear = [];
 
-var rankingByApplicationYear = [];
-var rankingByApplicationUniversity = [];
-var rankingByUniversityYear = [];
-var rankingByAlgorithmUniversity = [];
-var rankingByAlgorithmYear = [];
-
 var collaborationNetwork = {};
 var collaborationNetworkSize = {};
+
+var dimensionsForBubbleChart = {
+	"Application": "custom_application",
+	"Year": "year",
+	"Algorithm": "custom_algorithm",
+	"University": "custom_ies",
+};
 
 function appendRow(tableId, columns){
 	var row = "<tr>";
 
 	$.each(columns, function(key, column){
-        if(key == 0){
+        if(key === 0){
             row += "<td width='50px'>CONTENT</td>".replace("CONTENT", column);
         }else{
             row += "<td>CONTENT</td>".replace("CONTENT", column);
@@ -46,12 +49,44 @@ function messageSpin(text){
 	console.log(text);
 }
 
+function loadBubbleChart(firstDimension, secondDimension, color){
+
+	var ranking = [];
+
+	$.each(entries, function(key, entry){
+        generateRankingForTwoCategories(entry, ranking, secondDimension, firstDimension);
+    });
+
+	var addMissingApplications = 0;
+
+	if(firstDimension == "custom_application"){
+		addMissingApplications += 2;
+	}
+	if(secondDimension == "custom_application"){
+		addMissingApplications += 1;
+	}
+
+	var firstLabel = "";
+	var secondLabel = "";
+
+	for(var i in dimensionsForBubbleChart){
+		if(dimensionsForBubbleChart[i] == firstDimension){
+			firstLabel = i;
+		}
+		if(dimensionsForBubbleChart[i] == secondDimension){
+			secondLabel = i;
+		}
+	}
+
+	plotTwoCategories("#chart-two-dimensions", entries, ranking, addMissingApplications, firstLabel, secondLabel, color);
+}
+
 function viewData(title, field, ranking){
     return function(){
         // Remove all rows before adding new rows
         $("#table-view-data tbody").empty();
 
-        $("#modal-view-data-title").html(title)
+        $("#modal-view-data-title").html(title);
         $("#modal-view-data-field").html(field);
 
         var id = 1;
@@ -65,7 +100,7 @@ function viewData(title, field, ranking){
 }
 
 function loadBibtextFileFromUrl(){
-    showSpin()
+    showSpin();
 
 	messageSpin("Sending request...");
 
@@ -87,9 +122,11 @@ function loadBibtextFileFromUrl(){
 function success(response){
 	messageSpin("Received");
 
-    var entries = parse(response);
+    entries = parse(response);
 
     messageSpin("Ploting charts...");
+
+	$("#charts").removeClass("hide");
 
 	plotUsingColumns("#chart-year", entries, rankingByYear, "Year", true);
 	plotUsingColumns("#chart-university", entries, rankingByUniversity, "University", false);
@@ -100,19 +137,11 @@ function success(response){
 	plotUsingPie("#chart-algorithm", entries, rankingByAlgorithm, "Algorithm");
 	plotUsingPie("#chart-language", entries, rankingByLanguage, "Language");
 
-    plotTwoCategories("#chart-application-year", entries, rankingByApplicationYear, true, "Application", "Year", "#d95978");
-    plotTwoCategories("#chart-application-university", entries, rankingByApplicationUniversity, true, "Application", "University");
-    plotTwoCategories("#chart-university-year", entries, rankingByUniversityYear, false, "University", "Year");
-	plotTwoCategories("#chart-algorithm-year", entries, rankingByAlgorithmYear, false, "Algorithm", "Year");
-	plotTwoCategories("#chart-algorithm-university", entries, rankingByAlgorithmUniversity, false, "Algorithm", "University", "#787cda");
+    plotCollaborationNetwork(collaborationNetwork, collaborationNetworkSize);
 
-	plotCollaborationNetwork(collaborationNetwork, collaborationNetworkSize);
+	loadBubbleChart("custom_application", "year", "#7cb5ec");
 
     hideSpin();
-
-	$(".credits").removeClass("hide");
-
-	$("#collaboration-network").removeClass("hide");
 
 	messageSpin("Done");
 }
@@ -174,17 +203,11 @@ function processEntry(entry){
     generateRankingBy(entry, rankingByUniversity, "custom_ies");
 	generateRankingBy(entry, rankingByLanguage, "custom_language");
 
-    generateRankingForTwoCategories(entry, rankingByApplicationYear, "year", "custom_application");
-    generateRankingForTwoCategories(entry, rankingByApplicationUniversity, "custom_ies", "custom_application");
-    generateRankingForTwoCategories(entry, rankingByUniversityYear, "year", "custom_ies");
-	generateRankingForTwoCategories(entry, rankingByAlgorithmYear, "year", "custom_algorithm");
-	generateRankingForTwoCategories(entry, rankingByAlgorithmUniversity, "custom_ies", "custom_algorithm");
-
     generateCollaborativeGraph(entry);
 }
 
 function trimAllFields(entry){
-    for(c in entry){
+    for(var c in entry){
         if( ! Array.isArray(entry[c])){
             entry[c] = entry[c].trim();
         }
@@ -237,7 +260,7 @@ function generateCollaborativeGraph(entry){
 
 	$.each(universities, function (index, author1) {
 
-		if(collaborationNetwork[author1.trim()] == undefined || collaborationNetwork[author1.trim()] == ""){
+		if( ! collaborationNetwork[author1.trim()]){
 			collaborationNetwork[author1.trim()] = {children: [], map: 0};
 		}
 
@@ -289,7 +312,7 @@ function plotUsingHorizontalColumns(elementId, entries, ranking, categoryTitle){
 		viewData: viewData(title, categoryTitle, ranking),
 	};
 
-	plotHorizontalColumnChart(options);
+	Highcharts.plotHorizontalColumnChart(options);
 }
 
 function plotUsingPie(elementId, entries, ranking, categoryTitle){
@@ -315,7 +338,7 @@ function plotUsingPie(elementId, entries, ranking, categoryTitle){
 		viewData: viewData(title, categoryTitle, ranking),
 	};
 
-    plotPieChart(options);
+    Highcharts.plotPieChart(options);
 }
 
 function plotUsingColumns(elementId, entries, ranking, categoryTitle, countSorted){
@@ -335,7 +358,7 @@ function plotUsingColumns(elementId, entries, ranking, categoryTitle, countSorte
 	var data = [];
 
 	$.each(ranking, function(key, entry){
-		categories.push(entry.label)
+		categories.push(entry.label);
 		data.push(entry.count);
     });
 
@@ -351,12 +374,14 @@ function plotUsingColumns(elementId, entries, ranking, categoryTitle, countSorte
 		viewData: viewData(title, categoryTitle, ranking),
 	};
 
-	plotColumnChar(options);
+	Highcharts.plotColumnChar(options);
 }
 
-function plotTwoCategories(elementId, entries, ranking, isApplicationCategory, titleOne, titleTwo, color){
+function plotTwoCategories(elementId, entries, ranking, addMissingApplications, titleOne, titleTwo, color){
 
 	color = color || "#f6a25c";
+
+	addMissingApplications = addMissingApplications || 0;
 
 	var categoryTitle = titleOne + " and " + titleTwo;
 
@@ -364,7 +389,7 @@ function plotTwoCategories(elementId, entries, ranking, isApplicationCategory, t
 
 	messageSpin("Ploting " + title + "...");
 
-    isApplicationCategory = isApplicationCategory || false;
+	Arrays.sortRankingByCount(ranking);
 
     var categoryOne = [];
     var categoryTwo = [];
@@ -382,12 +407,20 @@ function plotTwoCategories(elementId, entries, ranking, isApplicationCategory, t
             categoryTwo.push(cTwo);
 	});
 
-    if(isApplicationCategory){
+    if(addMissingApplications !== 0){
         var applications = getApplicationTypes();
-        for(var index in applications){
-            if(categoryTwo.indexOf(index) === -1){
-                categoryTwo.push(index);
-            }
+
+		for(var index in applications){
+			if(addMissingApplications == 1 || addMissingApplications == 3){
+	            if(categoryOne.indexOf(index) === -1){
+	                categoryOne.push(index);
+	            }
+			}
+			if(addMissingApplications == 2 || addMissingApplications == 3){
+				if(categoryTwo.indexOf(index) === -1){
+	                categoryTwo.push(index);
+	            }
+			}
         }
     }
 
@@ -420,272 +453,29 @@ function plotTwoCategories(elementId, entries, ranking, isApplicationCategory, t
 		viewData: viewData(title, categoryTitle, ranking),
 	};
 
-	plotBubbleChart(options)
-}
-
-function plotBubbleChart(options){
-	$(options.elementId).highcharts({
-        chart: {
-            type: 'bubble',
-            plotBorderWidth: 1,
-            zoomType: 'xy',
-			height: options.height || 500,
-        },
-        legend: {
-            enabled: false
-        },
-        title: {
-            text: options.title
-        },
-        subtitle: {
-			text: options.subtitle || 'An Estimate'
-		},
-        xAxis: {
-            min: -1,
-            gridLineWidth: 1,
-			tickInterval: 1,
-			labels: {
-                rotation: -45,
-                formatter: function() {
-                    return options.categoryOne[this.value];
-				},
-            }
-        },
-		yAxis: {
-            min: -1,
-			tickInterval: 1,
-			title: {
-				text: ""
-			},
-			labels: {
-                formatter: function() {
-                    return options.categoryTwo[this.value];
-				}
-            },
-
-        },
-        tooltip: {
-			formatter: function(){
-				return "<b>"+options.categoryTwo[this.point.y]+" and "+options.categoryOne[this.point.x] + "</b><br> Number of Papers: "+this.point.z;
-			}
-        },
-        plotOptions: {
-            series: {
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.z}'
-                }
-            }
-        },
-		exporting: {
-            buttons: {
-                customButton: {
-                    x: -40,
-                    onclick: options.viewData,
-                    text: "View data"
-                }
-            }
-        },
-		credits: {
-            enabled: false
-        },
-        series: options.series
-    });
-}
-
-function plotHorizontalColumnChart(options){
-
-	$(options.elementId).highcharts({
-        chart: {
-            type: 'bar',
-            height: options.height || 500,
-        },
-        title: {
-            text: options.title
-        },
-		subtitle: {
-			text: options.subtitle || 'An Estimate'
-		},
-        xAxis: {
-            categories: options.categories,
-            title: {
-                text: null
-            }
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: options.yAxisTitle || 'Number of Papers',
-                align: 'high'
-            },
-            labels: {
-                overflow: 'justify'
-            }
-        },
-        legend: {
-            enabled: options.enabledLegend || false,
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            x: -40,
-            y: 80,
-            floating: true,
-            borderWidth: 1,
-            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-            shadow: true
-        },
-        plotOptions: {
-            bar: {
-                dataLabels: {
-                    enabled: true
-                }
-            }
-        },
-		exporting: {
-            buttons: {
-                customButton: {
-                    x: -40,
-                    onclick: options.viewData,
-                    text: "View data"
-                }
-            }
-        },
-        credits: {
-            enabled: false
-        },
-        series: options.series
-    });
-}
-
-function plotColumnChar(options){
-    $(options.elementId).highcharts({
-         chart: {
-             type: 'column',
-             height: options.height || 500,
-         },
-         title: {
-             text: options.title
-         },
-         subtitle: {
- 			text: options.subtitle || 'An Estimate'
- 		 },
-         xAxis: {
-             categories: options.categories,
-         },
-         yAxis: {
-             min: 0,
-             title: {
-                 text: options.yAxisTitle || 'Number of Papers',
-             },
-             stackLabels: {
-                 enabled: true,
-                 style: {
-                     fontWeight: 'bold',
-                     color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                 }
-             }
-         },
-         legend: {
-             enabled: options.legendEnabled || false,
-             align: 'right',
-             x: -30,
-             verticalAlign: 'top',
-             y: 30,
-             floating: true,
-             backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-             borderColor: '#CCC',
-             borderWidth: 1,
-             shadow: false
-         },
-         tooltip: {
-             pointFormat: 'Number of Papers: {point.stackTotal}',
-         },
-         plotOptions: {
-             column: {
-                 stacking: 'normal',
-                 dataLabels: {
-                     enabled: true,
-                     color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-                     style: {
-                         textShadow: '0 0 3px black'
-                     },
-                     formatter: function() {
-                         if (this.y !== 0) {
-                             return this.y;
-                         } else {
-                             return null;
-                         }
-                    }
-                 }
-             }
-         },
-         exporting: {
-             buttons: {
-                 customButton: {
-                     x: -40,
-                     onclick: options.viewData,
-                     text: "View data"
-                 }
-             }
-         },
-         credits: {
-             enabled: false
-         },
-         series: options.series
-     });
-}
-
-function plotPieChart(options){
-    $(options.elementId).highcharts({
-        chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            type: 'pie',
-            height: options.height || 500,
-        },
-        title: {
-            text: options.title
-        },
-        subtitle: {
-           text: options.subtitle || 'An Estimate'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.y}</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                    style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                    }
-                }
-            }
-        },
-        credits: {
-            enabled: false
-        },
-		exporting: {
-            buttons: {
-                customButton: {
-                    x: -40,
-                    onclick: options.viewData,
-                    text: "View data"
-                }
-            }
-        },
-        series: [{
-            name: 'Number of Papers',
-            colorByPoint: true,
-            data: options.data
-        }]
-    });
+	Highcharts.plotBubbleChart(options);
 }
 
 $(function(){
+
+	for(var index in dimensionsForBubbleChart){
+		var value = dimensionsForBubbleChart[index];
+		var text = index;
+
+		$('#bubble-chart-first-dimension').append($('<option>', {value: value, text : text}));
+		$('#bubble-chart-second-dimension').append($('<option>', {value: value, text : text}));
+	}
+
+	$('#bubble-chart-first-dimension [value=custom_application]').attr('selected', 'selected');
+	$('#bubble-chart-second-dimension [value=year]').attr('selected', 'selected');
+
+	$("select").change(function(event){
+		var firstDimension = $('#bubble-chart-first-dimension').val();
+		var secondDimension = $('#bubble-chart-second-dimension').val();
+		var color = $('#bubble-chart-color').val();
+
+		loadBubbleChart(firstDimension, secondDimension, color);
+	});
+
 	loadBibtextFileFromUrl();
 });

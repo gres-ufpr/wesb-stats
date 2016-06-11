@@ -50,7 +50,7 @@
 
             <p>This page is maintained by <a target="_blank" href="http://www.github.com/thiagodnf">Thiago Nascimento</a>, Ph.D student at Federal University of Paraná</p>
 
-            <div class="panel-loading hide">
+            <div class="panel-loading">
                 <img id="panel-loading-logo" class="img-responsive" src="img/loading.gif"/>
                 <p id="panel-loading-text">Loading...</p>
             </div>
@@ -59,28 +59,72 @@
 
             <div id="error"></div>
 
-            <div id="charts">
+            <div id="charts" class="hide">
                 <div class="chart" id="chart-year"></div>
-
-                <div class="chart" id="chart-application"></div>
-                <div class="chart" id="chart-application-year"></div>
-                <div class="chart" id="chart-application-university"></div>
 
                 <div class="chart" id="chart-author"></div>
                 <div class="chart" id="chart-university"></div>
-                <div class="chart" id="chart-university-year"></div>
 
+                <div class="chart" id="chart-application"></div>
                 <div class="chart" id="chart-algorithm"></div>
-                <div class="chart" id="chart-algorithm-year"></div>
-                <div class="chart" id="chart-algorithm-university"></div>
-                <div class="chart" id="chart-language"></div>
 
-                <div class="chart hide" id="collaboration-network">
-                    <p class="chart-title">Collaboration Network</p>
-                    <div style="text-align:center;" id="chart-collaborative"></div>
+                <div class="chart" id="chart-custom">
+                    <div class="chart-panel">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="bubble-chart-first-dimension">Y Axis</label>
+                                    <select class="form-control" id="bubble-chart-first-dimension" class="bubble-chart">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="bubble-chart-second-dimension">X Axis</label>
+                                    <select class="form-control" id="bubble-chart-second-dimension" class="bubble-chart">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="bubble-chart-color">Color:</label>
+                                    <select class="form-control" id="bubble-chart-color" class="bubble-chart">
+                                        <option value="#7cb5ec">Blue</option>
+                                        <option value="#434348">Black</option>
+                                        <option value="#90ed7d">Green</option>
+                                        <option value="#f7a35c">Orange</option>
+                                        <option value="#8085e9">Purple</option>
+                                        <option value="#f15c80">Pink</option>
+                                        <option value="#e4d354">Yellow</option>
+                                        <option value="#2b908f">Cornflower Blue</option>
+                                        <option value="#f45b5b">Red</option>
+                                        <option value="#91e8e1">Aquamarine</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-offset-6"></div>
+                        </div>
+                    </div>
+                    <div id="chart-two-dimensions"></div>
                 </div>
 
-                <div class="chart credits hide">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="chart" id="chart-language"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="chart" id="collaboration-network">
+                            <p class="chart-title">Collaboration Network</p>
+                            <div style="text-align:center;" id="chart-collaborative"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="chart credits">
                     <h3>Credits</h3>
                     <p>This page uses some great libraries:</p>
                     <ul>
@@ -131,7 +175,8 @@
         <script type="text/javascript" charset="utf8" src="js/exporting.js"></script>
 
         <!-- custom -->
-        <script type="text/javascript" charset="utf8" src="js/lib/arrays.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/util/arrays.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/util/highcharts.js"></script>
         <script type="text/javascript" charset="utf8" src="js/BibTex-0.1.2.js"></script>
         <script type="text/javascript" charset="utf8" src="js/collaborative-graph.js"></script>
         <script type="text/javascript" charset="utf8" src="js/script.js"></script>

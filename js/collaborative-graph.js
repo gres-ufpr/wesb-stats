@@ -1,4 +1,4 @@
-var diameter = 500,
+var diameter = 400,
     radius = diameter / 2,
     innerRadius = radius - 100;
 
@@ -11,15 +11,15 @@ var bundle = d3.layout.bundle();
 
 var line = d3.svg.line.radial()
     .interpolate("bundle")
-    .tension(.85)
+    .tension(0.85)
     .radius(function(d) { return d.y; })
     .angle(function(d) { return d.x / 180 * Math.PI; });
 
 var svg = d3.select("#chart-collaborative").append("svg")
     .attr("width", diameter+"px")
-    .attr("height", 610+ "px")
+    .attr("height", 500+ "px")
     .append("g")
-    .attr("transform", "translate(" + radius + "," + 300 + ")");
+    .attr("transform", "translate(" + radius + "," + 230 + ")");
 
 var link = svg.append("g").selectAll(".link"),
     node = svg.append("g").selectAll(".node");
@@ -81,7 +81,7 @@ function plotCollaborationNetwork(collaborativeGraph, size) {
       .text(function(d) { return d.key; })
       .on("mouseover", mouseovered)
       .on("mouseout", mouseouted);
-};
+}
 
 function mouseovered(d) {
   node

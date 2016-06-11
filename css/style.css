@@ -44,6 +44,18 @@ body{
     background-color: white;
 }
 
+.chart-panel{
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: white;
+    background-color: #46B6AC;
+}
+
+.chart-panel label{
+    font-weight: 100;
+}
+
 .chart-title{
     color: #333333;
     font-size: 18px;
@@ -82,8 +94,8 @@ body{
     }
 }
 
-#chart-collaborative{
-    height: 610px;
+#collaboration-network{
+    height: 500px;
 }
 
 node {
