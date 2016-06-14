@@ -12,12 +12,14 @@ var rankingByYear = [];
 var collaborationNetwork = {};
 var collaborationNetworkSize = {};
 
-var dimensionsForBubbleChart = {
-	"Application": "custom_application",
-	"Year": "year",
-	"Algorithm": "custom_algorithm",
-	"University": "custom_ies",
-};
+var dimensionsForBubbleChart = [
+	{name:"Application", bibtexEntry:"custom_application", ignoredWords:[]},
+	{name:"Year", bibtexEntry:"year", ignoredWords:[]},
+	{name:"Algorithm", bibtexEntry:"custom_algorithm", ignoredWords:[]},
+	{name:"University", bibtexEntry:"custom_ies", ignoredWords:[]},
+	{name:"Study Type", bibtexEntry:"custom_study_type", ignoredWords:[]},
+	{name:"Instance Type",bibtexEntry:"custom_instance_type", ignoredWords:['No Used']},
+];
 
 function appendRow(tableId, columns){
 	var row = "<tr>";
@@ -49,36 +51,41 @@ function messageSpin(text){
 	console.log(text);
 }
 
-function loadBubbleChart(firstDimension, secondDimension, color){
+function loadBubbleChart(propX, propY, color){
 
 	var ranking = [];
 
+	// Find the ignored words
+
+	var ignoredWordsForXAxis = [];
+	var ignoredWordsForYAxis = [];
+
+	for(var i = 0 ; i < dimensionsForBubbleChart.length; i++){
+		if(dimensionsForBubbleChart[i].bibtexEntry == propX){
+			ignoredWordsForXAxis = dimensionsForBubbleChart[i].ignoredWords;
+		}
+		if(dimensionsForBubbleChart[i].bibtexEntry == propY){
+			ignoredWordsForYAxis = dimensionsForBubbleChart[i].ignoredWords;
+		}
+	}
+
 	$.each(entries, function(key, entry){
-        generateRankingForTwoCategories(entry, ranking, secondDimension, firstDimension);
+        generateRankingForTwoCategories(entry, ranking, propX, propY, ignoredWordsForXAxis, ignoredWordsForYAxis);
     });
-
-	var addMissingApplications = 0;
-
-	if(firstDimension == "custom_application"){
-		addMissingApplications += 2;
-	}
-	if(secondDimension == "custom_application"){
-		addMissingApplications += 1;
-	}
 
 	var firstLabel = "";
 	var secondLabel = "";
 
-	for(var i in dimensionsForBubbleChart){
-		if(dimensionsForBubbleChart[i] == firstDimension){
-			firstLabel = i;
+	$.each(dimensionsForBubbleChart, function(index, obj){
+		if(obj.bibtexEntry == propX){
+			firstLabel = obj.name;
 		}
-		if(dimensionsForBubbleChart[i] == secondDimension){
-			secondLabel = i;
+		if(obj.bibtexEntry == propY){
+			secondLabel = obj.name;
 		}
-	}
+	});
 
-	plotTwoCategories("#chart-two-dimensions", entries, ranking, addMissingApplications, firstLabel, secondLabel, color);
+	plotTwoCategories("#chart-two-dimensions", entries, ranking, firstLabel, secondLabel, color);
 }
 
 function viewData(title, field, ranking){
@@ -139,7 +146,7 @@ function success(response){
 
     plotCollaborationNetwork(collaborationNetwork, collaborationNetworkSize);
 
-	loadBubbleChart("custom_application", "year", "#7cb5ec");
+	loadBubbleChart("year", "custom_application", "#7cb5ec");
 
     hideSpin();
 
@@ -234,20 +241,26 @@ function generateRankingBy(entry, ranking, property){
     });
 }
 
-function generateRankingForTwoCategories(entry, ranking, propOne, propTwo){
-    if( ! entry[propOne] || ! entry[propTwo]){
+function generateRankingForTwoCategories(entry, ranking, propX, propY, ignoredWordsForXAxis, ignoredWordsForYAxis){
+    if( ! entry[propX] || ! entry[propY]){
 		return;
 	}
 
-    var arraysOne = Arrays.splitAndTrim(entry[propOne], " and ");
-    var arraysTwo = Arrays.splitAndTrim(entry[propTwo], " and ");
+	var arraysForX = Arrays.splitAndTrim(entry[propX], " and ");
+    var arraysForY = Arrays.splitAndTrim(entry[propY], " and ");
 
-    arraysOne = Arrays.unique(arraysOne);
-    arraysTwo = Arrays.unique(arraysTwo);
+    arraysForX = Arrays.unique(arraysForX);
+    arraysForY = Arrays.unique(arraysForY);
 
-    $.each(arraysOne, function (index, arrayOne) {
-        $.each(arraysTwo, function (index, arrayTwo) {
-            Arrays.insertOrUpdateLabel(ranking, arrayOne + "###" + arrayTwo);
+    $.each(arraysForX, function (index, wordX) {
+		if(ignoredWordsForXAxis.indexOf(wordX) != -1){
+			return;
+		}
+		$.each(arraysForY, function (index, wordY) {
+			if(ignoredWordsForYAxis.indexOf(wordY) != -1){
+				return;
+			}
+			Arrays.insertOrUpdateLabel(ranking, wordX + "###" + wordY);
         });
     });
 }
@@ -377,11 +390,9 @@ function plotUsingColumns(elementId, entries, ranking, categoryTitle, countSorte
 	Highcharts.plotColumnChar(options);
 }
 
-function plotTwoCategories(elementId, entries, ranking, addMissingApplications, titleOne, titleTwo, color){
+function plotTwoCategories(elementId, entries, ranking, titleOne, titleTwo, color){
 
 	color = color || "#f6a25c";
-
-	addMissingApplications = addMissingApplications || 0;
 
 	var categoryTitle = titleOne + " and " + titleTwo;
 
@@ -407,22 +418,16 @@ function plotTwoCategories(elementId, entries, ranking, addMissingApplications, 
             categoryTwo.push(cTwo);
 	});
 
-    if(addMissingApplications !== 0){
-        var applications = getApplicationTypes();
+	var applications = getApplicationTypes();
 
-		for(var index in applications){
-			if(addMissingApplications == 1 || addMissingApplications == 3){
-	            if(categoryOne.indexOf(index) === -1){
-	                categoryOne.push(index);
-	            }
-			}
-			if(addMissingApplications == 2 || addMissingApplications == 3){
-				if(categoryTwo.indexOf(index) === -1){
-	                categoryTwo.push(index);
-	            }
-			}
-        }
-    }
+	for(var index in applications){
+		if(titleOne == "Application" && categoryOne.indexOf(index) == -1){
+			categoryOne.push(index);
+		}
+		if(titleTwo == "Application" && categoryTwo.indexOf(index) == -1){
+			categoryTwo.push(index);
+		}
+	}
 
     categoryOne = categoryOne.sort();
     categoryTwo = categoryTwo.sort();
@@ -458,23 +463,20 @@ function plotTwoCategories(elementId, entries, ranking, addMissingApplications, 
 
 $(function(){
 
-	for(var index in dimensionsForBubbleChart){
-		var value = dimensionsForBubbleChart[index];
-		var text = index;
+	$.each(dimensionsForBubbleChart, function(index, obj){
+		$('#bubble-chart-x-axis').append($('<option>', {value: obj.bibtexEntry, text : obj.name}));
+		$('#bubble-chart-y-axis').append($('<option>', {value: obj.bibtexEntry, text : obj.name}));
+	});
 
-		$('#bubble-chart-first-dimension').append($('<option>', {value: value, text : text}));
-		$('#bubble-chart-second-dimension').append($('<option>', {value: value, text : text}));
-	}
-
-	$('#bubble-chart-first-dimension [value=custom_application]').attr('selected', 'selected');
-	$('#bubble-chart-second-dimension [value=year]').attr('selected', 'selected');
+	$('#bubble-chart-x-axis [value=year]').attr('selected', 'selected');
+	$('#bubble-chart-y-axis [value=custom_application]').attr('selected', 'selected');
 
 	$("select").change(function(event){
-		var firstDimension = $('#bubble-chart-first-dimension').val();
-		var secondDimension = $('#bubble-chart-second-dimension').val();
+		var xAxis = $('#bubble-chart-x-axis').val();
+		var YAxis = $('#bubble-chart-y-axis').val();
 		var color = $('#bubble-chart-color').val();
 
-		loadBubbleChart(firstDimension, secondDimension, color);
+		loadBubbleChart(xAxis, YAxis, color);
 	});
 
 	loadBibtextFileFromUrl();
