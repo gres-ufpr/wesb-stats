@@ -152,7 +152,7 @@ Highcharts.plotPieChart = function(options){
            text: options.subtitle || 'An Estimate'
         },
         tooltip: {
-            pointFormat: '{series.name}: <b>{point.y}</b>'
+            pointFormat: 'Number of Papers: <b>{point.y}</b>'
         },
         plotOptions: {
             pie: {
@@ -180,10 +180,11 @@ Highcharts.plotPieChart = function(options){
             }
         },
         series: [{
-            name: 'Number of Papers',
+            name: options.seriesName || 'Number of Papers',
             colorByPoint: true,
             data: options.data
-        }]
+        }],
+		drilldown: options.drilldown,
     });
 };
 

@@ -12,6 +12,20 @@ var rankingByYear = [];
 var collaborationNetwork = {};
 var collaborationNetworkSize = {};
 
+var drilldowns = [
+	{entry: "Algorithm",  categories: {
+		"ACO" : "Swarm Intelligence",
+		"MOPSO" : "Swarm Intelligence",
+		"PSO" : "Swarm Intelligence",
+		"NSGA-II" : "Multiobjective Evolutionary Algorithms",
+		"IBEA" : "Multiobjective Evolutionary Algorithms",
+		"PAES" : "Multiobjective Evolutionary Algorithms",
+		"SPEA2" : "Multiobjective Evolutionary Algorithms",
+		"MoCell" : "Multiobjective Evolutionary Algorithms",
+		"Random Search" : "Random Search",
+	}},
+];
+
 var dimensionsForBubbleChart = [
 	{name:"Application", bibtexEntry:"custom_application", ignoredWords:[]},
 	{name:"Year", bibtexEntry:"year", ignoredWords:[]},
@@ -336,17 +350,63 @@ function plotUsingPie(elementId, entries, ranking, categoryTitle){
 
     var data = [];
 
-    var sumOthers = 0;
+	var sumOthers = 0;
 
 	Arrays.sortRankingByCount(ranking);
 
-    $.each(ranking, function(key, entry){
-        data.push({name: entry.label, y: entry.count});
+	var drilldownsCategories = undefined;
+
+	$.each(drilldowns, function(key, entry){
+		if(entry.entry == categoryTitle){
+			drilldownsCategories = entry.categories;
+		}
+	});
+
+	var group = {};
+
+	$.each(ranking, function(key, entry){
+		if(!drilldownsCategories){
+			data.push({name: entry.label, y: entry.count});
+		}else{
+
+			var category = drilldownsCategories[entry.label];
+
+			if( ! category){
+				category = "Other";
+			}
+
+			if( ! group[category]){
+				group[category] = [];
+			}
+
+			group[category].push(entry);
+		}
     });
+
+	var dd = {
+		series: [],
+	};
+
+	for(var i in group){
+		var total = 0;
+
+		var values = [];
+
+		$.each(group[i], function(key, entry){
+			total += entry.count;
+			values.push([entry.label,entry.count]);
+		});
+
+		data.push({name: i, y: total, drilldown: i});
+		dd.series.push({name: i, data: values, id: i});
+	}
 
     var options = {
 		elementId: elementId,
 		data: data,
+		subtitle: "Click the slices to view the algorithms",
+		seriesName: categoryTitle,
+		drilldown: dd,
 		title: title,
 		viewData: viewData(title, categoryTitle, ranking),
 	};
