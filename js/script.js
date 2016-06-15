@@ -23,6 +23,24 @@ var drilldowns = [
 		"SPEA2" : "Multiobjective Evolutionary Algorithms",
 		"MoCell" : "Multiobjective Evolutionary Algorithms",
 		"Random Search" : "Random Search",
+		"Local Search Strategy" : "Local Search",
+		"Simulated Annealing" : "Local Search",
+		"Iterated Local Search" : "Local Search",
+		"Hill Climbing" : "Local Search",
+		"Multistart Strategy-based SA" : "Local Search",
+		"Brute-force Search" : "Brute-force and Exact Methods",
+		"Branch-and-Bound" : "Brute-force and Exact Methods",
+		"Greedy Algorithm" : "Greedy Algorithm",
+		"Genetic Algorithms" : "Genetic Algorithms",
+		"Coevolutionary Genetic Algorithm with Controled Genetic Classification" : "Genetic Algorithms",
+		"Coevolutionary Genetic Algorithm" : "Genetic Algorithms",
+		"Parallel Genetic Algorithms" : "Genetic Algorithms",
+		"GA-MI" : "Genetic Algorithms",
+		"A1" : "Genetic Algorithms",
+		"Clustering Algorithm" : "Clustering Algorithm",
+		"K-medoids" : "Clustering Algorithm",
+		"Hierarchical Clustering Algorithm" : "Clustering Algorithm",
+		"K-means" : "Clustering Algorithm",
 	}},
 ];
 
@@ -354,7 +372,7 @@ function plotUsingPie(elementId, entries, ranking, categoryTitle){
 
 	Arrays.sortRankingByCount(ranking);
 
-	var drilldownsCategories = undefined;
+	var drilldownsCategories;
 
 	$.each(drilldowns, function(key, entry){
 		if(entry.entry == categoryTitle){
@@ -401,10 +419,16 @@ function plotUsingPie(elementId, entries, ranking, categoryTitle){
 		dd.series.push({name: i, data: values, id: i});
 	}
 
+	var subtitle;
+
+	if(categoryTitle == "Algorithm"){
+		subtitle = "Click the slices to view the algorithms";
+	}
+
     var options = {
 		elementId: elementId,
 		data: data,
-		subtitle: "Click the slices to view the algorithms",
+		subtitle: subtitle,
 		seriesName: categoryTitle,
 		drilldown: dd,
 		title: title,
