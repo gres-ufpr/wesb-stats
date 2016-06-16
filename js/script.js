@@ -8,9 +8,13 @@ var rankingByAlgorithm = [];
 var rankingByUniversity = [];
 var rankingByLanguage = [];
 var rankingByYear = [];
+var rankingByCollaboration = [];
 
 var collaborationNetwork = {};
 var collaborationNetworkSize = {};
+
+var rankingbyTheMostNumberOfCollaboration = [];
+var rankingbyTheMostNumberOfAuthors = [];
 
 var drilldowns = [
 	{entry: "Algorithm",  categories: {
@@ -180,6 +184,9 @@ function success(response){
 
 	loadBubbleChart("year", "custom_application", "#7cb5ec");
 
+	plotTheMostNumberOf("#most-number-collaboration", rankingbyTheMostNumberOfCollaboration, 2);
+	plotTheMostNumberOf("#most-number-author", rankingbyTheMostNumberOfAuthors, 2)
+
     hideSpin();
 
 	messageSpin("Done");
@@ -256,6 +263,7 @@ function trimAllFields(entry){
 function generateRankingByAuthors(entry){
     $.each(entry.author, function (index, value) {
 		Arrays.insertOrUpdateLabel(rankingByAuthor, value.last.trim());
+		Arrays.insertOrUpdateLabel(rankingbyTheMostNumberOfAuthors, entry.year + " " + entry.title);
 	});
 }
 
@@ -303,6 +311,8 @@ function generateCollaborativeGraph(entry){
 
     universities = Arrays.unique(universities);
 
+	var map = {};
+
 	$.each(universities, function (index, author1) {
 
 		if( ! collaborationNetwork[author1.trim()]){
@@ -318,8 +328,12 @@ function generateCollaborativeGraph(entry){
 				}
 
 				collaborationNetworkSize[author1.trim()+"_"+author2.trim()]++;
+
+				Arrays.insertOrUpdateLabel(rankingByCollaboration, author1.trim()+"###"+author2.trim());
 			}
 		});
+
+		Arrays.insertOrUpdateLabel(rankingbyTheMostNumberOfCollaboration, entry.year + " " + entry.title);
 	});
 
 	for(var prop in collaborationNetwork){
@@ -545,6 +559,17 @@ function plotTwoCategories(elementId, entries, ranking, titleOne, titleTwo, colo
 	Highcharts.plotBubbleChart(options);
 }
 
+function plotTheMostNumberOf(id, ranking, size){
+
+	Arrays.sortRankingByCount(ranking);
+
+	for(var i = 0; i < size; i++){
+		$(id).append("<li>"+ranking[i].label+ " ("+ranking[i].count+")"+"</li>")
+	}
+
+
+}
+
 $(function(){
 
 	$.each(dimensionsForBubbleChart, function(index, obj){
@@ -561,6 +586,12 @@ $(function(){
 		var color = $('#bubble-chart-color').val();
 
 		loadBubbleChart(xAxis, YAxis, color);
+	});
+
+	$("#btn-cn-view-data").click(function(){
+		Arrays.sortRankingByCount(rankingByCollaboration);
+
+		return viewData("Collaboration Network", "University", rankingByCollaboration)();
 	});
 
 	loadBibtextFileFromUrl();
