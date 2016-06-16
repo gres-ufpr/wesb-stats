@@ -34,6 +34,7 @@
         <meta name="theme-color" content="#1a6693">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/jquery.dataTables.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
@@ -130,6 +131,23 @@
                     <ul id="most-number-author"></ul>
                 </div>
 
+                <div class="chart chart-text">
+                    <h4>List of Publications:</h4>
+                    <br>
+                    <div class="chart-text-body">
+                        <table id='table-list-of-publications' class='display' cellspacing='0' width='100%'>
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Reference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="chart credits">
                     <h3>Credits</h3>
                     <p>This page uses some great libraries:</p>
@@ -170,6 +188,24 @@
 			</div>
 		</div>
 
+        <div class="modal" id="modal-export-bibtex" tabindex="-1" role="dialog" aria-labelledby="modal-view-data-title">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Bibtex</h4>
+					</div>
+					<div class="modal-body">
+                        <pre id="export-bibtex">
+
+                        </pre>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
         <!-- default -->
         <script type="text/javascript" charset="utf8" src="js/jquery.min.js"></script>
         <script type="text/javascript" charset="utf8" src="js/bootstrap.min.js"></script>
@@ -186,6 +222,8 @@
         <script type="text/javascript" charset="utf8" src="js/util/highcharts.js"></script>
         <script type="text/javascript" charset="utf8" src="js/BibTex-0.1.2.js"></script>
         <script type="text/javascript" charset="utf8" src="js/collaborative-graph.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/publications.js"></script>
         <script type="text/javascript" charset="utf8" src="js/script.js"></script>
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

@@ -62,6 +62,16 @@ body{
 
 .chart-text h4{
     font-size: 18px;
+    font-weight: bold;
+}
+
+.chart-text-body{
+    font-size: 14px;
+}
+
+.dataTables_filter label, .dataTables_length label{
+    font-weight: inherit !important;
+    font-size: 13px;
 }
 
 .chart-panel label{

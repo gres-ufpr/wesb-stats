@@ -16,6 +16,8 @@ var collaborationNetworkSize = {};
 var rankingbyTheMostNumberOfCollaboration = [];
 var rankingbyTheMostNumberOfAuthors = [];
 
+var tableListOfPublications = {};
+
 var drilldowns = [
 	{entry: "Algorithm",  categories: {
 		"ACO" : "Swarm Intelligence",
@@ -189,6 +191,9 @@ function success(response){
 
     hideSpin();
 
+	// Repaint the table
+	tableListOfPublications.draw( false );
+
 	messageSpin("Done");
 }
 
@@ -250,6 +255,12 @@ function processEntry(entry){
 	generateRankingBy(entry, rankingByLanguage, "custom_language");
 
     generateCollaborativeGraph(entry);
+
+	// Append new row
+	tableListOfPublications.row.add( [
+		entry.year.trim(),          // YEAR COLUMN
+		new Publications().convertEntryToReference(entry).trim(),    // PUBLICATION COLUMN
+	]);
 }
 
 function trimAllFields(entry){
@@ -566,8 +577,6 @@ function plotTheMostNumberOf(id, ranking, size){
 	for(var i = 0; i < size; i++){
 		$(id).append("<li>"+ranking[i].label+ " ("+ranking[i].count+")"+"</li>")
 	}
-
-
 }
 
 $(function(){
@@ -592,6 +601,24 @@ $(function(){
 		Arrays.sortRankingByCount(rankingByCollaboration);
 
 		return viewData("Collaboration Network", "University", rankingByCollaboration)();
+	});
+
+	$(document).on('click', ".export-link", function(event){
+		 event.preventDefault();
+
+		$("#export-bibtex").html($(this).attr("data-bibtex-entry"));
+
+		$("#modal-export-bibtex").modal('show');
+	});
+
+	tableListOfPublications = $("#table-list-of-publications").DataTable({
+		"order": [[ 0, "desc" ]],   // Sort by year. Newer first.
+		columnDefs: [
+            { width: 20, targets: 0 }
+        ],
+		 "autoWidth": false,
+		"lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+		"iDisplayLength": 5
 	});
 
 	loadBibtextFileFromUrl();
