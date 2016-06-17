@@ -54,6 +54,7 @@ var dimensionsForBubbleChart = [
 	{name:"Application", bibtexEntry:"custom_application", ignoredWords:[]},
 	{name:"Year", bibtexEntry:"year", ignoredWords:[]},
 	{name:"Algorithm", bibtexEntry:"custom_algorithm", ignoredWords:[]},
+	{name:"Algorithm 2", bibtexEntry:"custom_algorithm_2", ignoredWords:[]},
 	{name:"University", bibtexEntry:"custom_ies", ignoredWords:[]},
 	{name:"Study Type", bibtexEntry:"custom_study_type", ignoredWords:[]},
 	{name:"Instance Type",bibtexEntry:"custom_instance_type", ignoredWords:['No Used']},
@@ -293,15 +294,36 @@ function generateRankingBy(entry, ranking, property){
 }
 
 function generateRankingForTwoCategories(entry, ranking, propX, propY, ignoredWordsForXAxis, ignoredWordsForYAxis){
-    if( ! entry[propX] || ! entry[propY]){
+	var pX = propX;
+	var pY = propY;
+
+	if(propX == "custom_algorithm_2"){
+		pX = "custom_algorithm";
+	}
+	if(propY == "custom_algorithm_2"){
+		pY = "custom_algorithm";
+	}
+
+	if( ! entry[pX] || ! entry[pY]){
 		return;
 	}
 
-	var arraysForX = Arrays.splitAndTrim(entry[propX], " and ");
-    var arraysForY = Arrays.splitAndTrim(entry[propY], " and ");
+	var arraysForX = Arrays.splitAndTrim(entry[pX], " and ");
+    var arraysForY = Arrays.splitAndTrim(entry[pY], " and ");
 
-    arraysForX = Arrays.unique(arraysForX);
-    arraysForY = Arrays.unique(arraysForY);
+    if(propX == "custom_algorithm_2"){
+		for(var i = 0 ; i < arraysForX.length; i++){
+			arraysForX[i] = drilldowns[0].categories[arraysForX[i]] || "Other";
+		};
+	}
+	if(propY == "custom_algorithm_2"){
+		for(var i = 0 ; i < arraysForY.length; i++){
+			arraysForY[i] = drilldowns[0].categories[arraysForY[i]] || "Other";
+		};
+	}
+
+	arraysForX = Arrays.unique(arraysForX);
+	arraysForY = Arrays.unique(arraysForY);
 
     $.each(arraysForX, function (index, wordX) {
 		if(ignoredWordsForXAxis.indexOf(wordX) != -1){
