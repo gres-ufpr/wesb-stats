@@ -109,11 +109,24 @@
                     <div id="chart-two-dimensions"></div>
                 </div>
 
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="chart" id="chart-language"></div>
+                <div class="chart" id="dynamic-pie-chart">
+                    <div class="chart-panel" style="background-color: #f45b5b">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="chart-pie-dimension">Dimension</label>
+                                    <select class="form-control" id="chart-pie-dimension" data-type="dynamic-pie-chart">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-offset-10"></div>
+                        </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div id="chart-plot-pie"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
                         <div class="chart" id="collaboration-network">
                             <p class="chart-title">Collaboration Network</p>
                             <center>

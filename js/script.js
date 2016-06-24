@@ -58,6 +58,9 @@ var dimensionsForBubbleChart = [
 	{name:"University", bibtexEntry:"custom_ies", ignoredWords:[]},
 	{name:"Study Type", bibtexEntry:"custom_study_type", ignoredWords:[]},
 	{name:"Instance Type",bibtexEntry:"custom_instance_type", ignoredWords:['No Used']},
+	{name:"Statistical Test",bibtexEntry:"custom_statistical_test", ignoredWords:[]},
+	{name:"Evaluation Methods",bibtexEntry:"custom_evaluation_method", ignoredWords:[]},
+	{name:"Language",bibtexEntry:"custom_language", ignoredWords:[]},
 ];
 
 function appendRow(tableId, columns){
@@ -88,6 +91,16 @@ function messageSpin(text){
 	$("#panel-loading-text").text(text);
 
 	console.log(text);
+}
+
+function loadPieChart(dimension, title){
+	var ranking = [];
+
+	$.each(entries, function(key, entry){
+		generateRankingBy(entry, ranking, dimension);
+	});
+
+	plotUsingPie("#chart-plot-pie", entries, ranking, title)
 }
 
 function loadBubbleChart(propX, propY, color){
@@ -186,6 +199,7 @@ function success(response){
     plotCollaborationNetwork(collaborationNetwork, collaborationNetworkSize);
 
 	loadBubbleChart("year", "custom_application", "#7cb5ec");
+	loadPieChart("custom_application", "Application");
 
 	plotTheMostNumberOf("#most-number-collaboration", rankingbyTheMostNumberOfCollaboration, 2);
 	plotTheMostNumberOf("#most-number-author", rankingbyTheMostNumberOfAuthors, 2)
@@ -606,17 +620,26 @@ $(function(){
 	$.each(dimensionsForBubbleChart, function(index, obj){
 		$('#bubble-chart-x-axis').append($('<option>', {value: obj.bibtexEntry, text : obj.name}));
 		$('#bubble-chart-y-axis').append($('<option>', {value: obj.bibtexEntry, text : obj.name}));
+		$('#chart-pie-dimension').append($('<option>', {value: obj.bibtexEntry, text : obj.name}));
 	});
 
 	$('#bubble-chart-x-axis [value=year]').attr('selected', 'selected');
 	$('#bubble-chart-y-axis [value=custom_application]').attr('selected', 'selected');
+	$('#chart-pie-dimension [value=custom_application]').attr('selected', 'selected');
 
 	$("select").change(function(event){
-		var xAxis = $('#bubble-chart-x-axis').val();
-		var YAxis = $('#bubble-chart-y-axis').val();
-		var color = $('#bubble-chart-color').val();
+		if($(this).attr("data-type") == "dynamic-pie-chart"){
+			var dimension = $('#chart-pie-dimension').val();
+			var title = $('#chart-pie-dimension option:selected').text();
 
-		loadBubbleChart(xAxis, YAxis, color);
+			loadPieChart(dimension, title);
+		}else{
+			var xAxis = $('#bubble-chart-x-axis').val();
+			var YAxis = $('#bubble-chart-y-axis').val();
+			var color = $('#bubble-chart-color').val();
+
+			loadBubbleChart(xAxis, YAxis, color);
+		}
 	});
 
 	$("#btn-cn-view-data").click(function(){
