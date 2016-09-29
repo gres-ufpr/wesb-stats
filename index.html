@@ -137,6 +137,19 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="chart" id="force-directed-graph">
+
+                            <p class="chart-title">Researcher-driven Collaboration Network</p>
+                            <center>
+                                <p>You can perform a drag-and-drop operation for moving the nodes</p>
+                            </center>
+                            <div id="svg-force-directed-graph"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="chart chart-text">
                     <h4>The most number of collaborations:</h4>
                     <ul id="most-number-collaboration"></ul>
@@ -223,18 +236,20 @@
         <script type="text/javascript" charset="utf8" src="js/jquery.min.js"></script>
         <script type="text/javascript" charset="utf8" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" charset="utf8" src="js/d3.v3.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://d3js.org/d3.v4.min.js"></script>
 
         <!-- highcharts -->
         <script type="text/javascript" charset="utf8" src="js/highcharts.js"></script>
         <script type="text/javascript" charset="utf8" src="js/highcharts-more.js"></script>
         <script type="text/javascript" charset="utf8" src="js/exporting.js"></script>
-        <script type="text/javascript" charset="utf8" src="https://code.highcharts.com/modules/drilldown.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/drilldown.js"></script>
 
         <!-- custom -->
         <script type="text/javascript" charset="utf8" src="js/util/arrays.js"></script>
         <script type="text/javascript" charset="utf8" src="js/util/highcharts.js"></script>
         <script type="text/javascript" charset="utf8" src="js/BibTex-0.1.2.js"></script>
         <script type="text/javascript" charset="utf8" src="js/collaborative-graph.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/force-directed-graph.js"></script>
         <script type="text/javascript" charset="utf8" src="js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" charset="utf8" src="js/publications.js"></script>
         <script type="text/javascript" charset="utf8" src="js/script.js"></script>

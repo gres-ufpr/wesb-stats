@@ -166,6 +166,31 @@ node {
 }
 
 
+
+#restart-force-directed-graph{
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+
+#svg-force-directed-graph{
+  height: 800px;
+}
+
+
+
+
+
 #panel-loading-logo{
     width: 22px;
     float: left;

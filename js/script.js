@@ -18,6 +18,12 @@ var rankingbyTheMostNumberOfAuthors = [];
 
 var tableListOfPublications = {};
 
+var universityCounter = 1;
+var universitiesIds = {};
+
+var forceDirectedGraphNodes = {};
+var forceDirectedGraphLinks = [];
+
 var drilldowns = [
 	{entry: "Algorithm",  categories: {
 		"ACO" : "Swarm Intelligence",
@@ -35,6 +41,7 @@ var drilldowns = [
 		"Hill Climbing" : "Local Search",
 		"Multistart Strategy-based SA" : "Local Search",
 		"Brute-force Search" : "Brute-force and Exact Methods",
+		"CPLEX" : "Brute-force and Exact Methods",
 		"Branch-and-Bound" : "Brute-force and Exact Methods",
 		"Greedy Algorithm" : "Greedy Algorithm",
 		"Genetic Algorithms" : "Evolutionary Algorithms",
@@ -197,12 +204,13 @@ function success(response){
 	plotUsingPie("#chart-language", entries, rankingByLanguage, "Language");
 
     plotCollaborationNetwork(collaborationNetwork, collaborationNetworkSize);
+	plotForceDirectedGraph(forceDirectedGraphNodes, forceDirectedGraphLinks);
 
 	loadBubbleChart("year", "custom_application", "#7cb5ec");
 	loadPieChart("custom_application", "Application");
 
-	plotTheMostNumberOf("#most-number-collaboration", rankingbyTheMostNumberOfCollaboration, 2);
-	plotTheMostNumberOf("#most-number-author", rankingbyTheMostNumberOfAuthors, 2)
+	plotTheMostNumberOf("#most-number-collaboration", rankingbyTheMostNumberOfCollaboration, 5);
+	plotTheMostNumberOf("#most-number-author", rankingbyTheMostNumberOfAuthors, 5)
 
     hideSpin();
 
@@ -261,6 +269,8 @@ function parse(content){
 function processEntry(entry){
     trimAllFields(entry);
 
+	generateUniversitiesIds(entry);
+
     generateRankingByAuthors(entry);
 
     generateRankingBy(entry, rankingByYear, "year");
@@ -271,11 +281,26 @@ function processEntry(entry){
 
     generateCollaborativeGraph(entry);
 
+	generateForceDirectedGraph(entry);
+
 	// Append new row
 	tableListOfPublications.row.add( [
 		entry.year.trim(),          // YEAR COLUMN
 		new Publications().convertEntryToReference(entry).trim(),    // PUBLICATION COLUMN
 	]);
+}
+
+function generateUniversitiesIds(entry){
+
+	var universities = Arrays.splitAndTrim(entry.custom_ies, " and ");
+
+	universities = Arrays.unique(universities);
+
+	$.each(universities, function (index, university) {
+		if( ! universitiesIds[university]){
+			universitiesIds[university] = universityCounter++;;
+		}
+	});
 }
 
 function trimAllFields(entry){
@@ -352,6 +377,51 @@ function generateRankingForTwoCategories(entry, ranking, propX, propY, ignoredWo
     });
 }
 
+function generateForceDirectedGraph(entry){
+
+	var universities = Arrays.splitAndTrim(entry.custom_ies, " and ");
+
+	var authors = entry.author;
+
+	if(authors.length != universities.length){
+		console.error("The authors and universities should have the same number of information");
+	}
+
+	$.each(authors, function (indexOne, authorOne) {
+		var universityNameOne = universities[indexOne];
+		var universityId = universitiesIds[universityNameOne];
+
+		// Process nodes
+
+		var key = universityNameOne + "_" + authorOne.last;
+
+		if( ! forceDirectedGraphNodes[key]){
+			forceDirectedGraphNodes[key] = [];
+		}
+
+		var found = $.inArray(universityId, forceDirectedGraphNodes[key]) > -1;
+
+		if( ! found){
+			forceDirectedGraphNodes[key].push(universityId);
+		}
+
+		// Process Edges
+
+		$.each(authors, function (indexTwo, authorTwo) {
+			var universityNameTwo = universities[indexTwo];
+
+			if(authorOne.last.trim() != authorTwo.last.trim()){
+
+				if(Arrays.containsLabel(forceDirectedGraphLinks, universityNameTwo+"_"+authorTwo.last.trim()+"###"+universityNameOne+"_"+authorOne.last.trim()) != -1){
+					// Do nothing
+				}else{
+					Arrays.insertOrUpdateLabel(forceDirectedGraphLinks, universityNameOne+"_"+authorOne.last.trim()+"###"+universityNameTwo+"_"+authorTwo.last.trim());
+				}
+			}
+		});
+	});
+}
+
 function generateCollaborativeGraph(entry){
 
 	var universities = Arrays.splitAndTrim(entry.custom_ies, " and ");
@@ -387,6 +457,38 @@ function generateCollaborativeGraph(entry){
 		collaborationNetwork[prop].children = Arrays.unique(collaborationNetwork[prop].children);
 	}
 }
+
+function plotForceDirectedGraph(forceDirectedGraphNodes, forceDirectedGraphLinks){
+
+	messageSpin("Ploting Force-Directed Graph");
+
+
+	var nodes = [];
+	var links = [];
+
+	for(var i in forceDirectedGraphNodes){
+		//var split = i.split("###");
+
+		$.each(forceDirectedGraphNodes[i], function (index, id) {
+			nodes.push({"id": i.replace("_"," "), "group": id});
+		});
+	}
+
+	$.each(forceDirectedGraphLinks, function (index, link) {
+		var authors = link.label.split("###");
+
+		var size = link.count;
+
+		if(size > 1){
+			size *= 2;
+		}
+
+		links.push({"source": authors[0].replace("_"," "), "target": authors[1].replace("_"," "), "value": size});
+	});
+
+	plotForceDirectedGraph3(nodes, links);
+}
+
 
 function plotUsingHorizontalColumns(elementId, entries, ranking, categoryTitle){
 
@@ -623,6 +725,8 @@ $(function(){
 		$('#chart-pie-dimension').append($('<option>', {value: obj.bibtexEntry, text : obj.name}));
 	});
 
+	//$("#svg-force-directed-graph").width("100px");
+
 	$('#bubble-chart-x-axis [value=year]').attr('selected', 'selected');
 	$('#bubble-chart-y-axis [value=custom_application]').attr('selected', 'selected');
 	$('#chart-pie-dimension [value=custom_application]').attr('selected', 'selected');
@@ -666,5 +770,22 @@ $(function(){
 		"iDisplayLength": 5
 	});
 
+	$("#restart-force-directed-graph").click(function(){
+		$("#svg-force-directed-graph").empty();
+		plotForceDirectedGraph(forceDirectedGraphNodes, forceDirectedGraphLinks);
+	});
+
+	//var panZoomTiger = svgPanZoom('#svg-force-directed-graph');
+
 	loadBibtextFileFromUrl();
+
+
+	//var button = document.getElementById("animate")
+	//button.addEventListener("click", function() {
+	// Pan by any values from -80 to 80
+	//customPanBy({x: Math.round(Math.random() * 160 - 80), y: Math.round(Math.random() * 160 - 80)})
+	//});
+
+
+
 });
