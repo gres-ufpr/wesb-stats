@@ -1,5 +1,6 @@
 
 
+function plotForceDirectedGraph3(nodes, links){
 
     var svg = d3.select("#svg-force-directed-graph")
           .append("svg")
@@ -17,10 +18,8 @@
           .force("link", d3.forceLink().id(function(d) { return d.id; }))
           .force("charge", d3.forceManyBody())
           .force("center", d3.forceCenter(width / 2, (height / 2)-50));
-          
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-function plotForceDirectedGraph3(nodes, links){
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
 
     var link = svg.append("g")
         .attr("class", "links")
@@ -63,22 +62,22 @@ function plotForceDirectedGraph3(nodes, links){
           .attr("cx", function(d) { return d.x; })
           .attr("cy", function(d) { return d.y; });
     }
-}
 
-function dragstarted(d) {
-  //if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
+    function dragstarted(d) {
+      //if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
 
-function dragged(d) {
-  d.fx = d3.event.x;
-  d.fy = d3.event.y;
-}
+    function dragged(d) {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
 
-function dragended(d) {
-  if (!d3.event.active) simulation.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
+    function dragended(d) {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
 }
