@@ -1,6 +1,5 @@
 
 
-function plotForceDirectedGraph3(nodes, links){
 
     var svg = d3.select("#svg-force-directed-graph")
           .append("svg")
@@ -14,12 +13,14 @@ function plotForceDirectedGraph3(nodes, links){
       var width = $(document).width();
       var height = $("#svg-force-directed-graph").height();
 
+      var simulation = d3.forceSimulation()
+          .force("link", d3.forceLink().id(function(d) { return d.id; }))
+          .force("charge", d3.forceManyBody())
+          .force("center", d3.forceCenter(width / 2, (height / 2)-50));
+          
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-    var simulation = d3.forceSimulation()
-        .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width / 2, (height / 2)-50));
+function plotForceDirectedGraph3(nodes, links){
 
     var link = svg.append("g")
         .attr("class", "links")
