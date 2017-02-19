@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" />
+        <meta name="description" content="Statistics of Publications for the Brazilian Workshop on Search-Based Software Engineering">
+	  	<meta name="author" content="Thiago Nascimento">
+		<meta name="keywords" content="Search-Based Software Engineering, wesb, sbse, statistics, Brazilian Workshop on Search-Based Software Engineering">
+        <meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="SBSE Stats">
+		<meta name="robots" content="index, follow">
+
+        <title>WESB Stats</title>
+
+        <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="img/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="img/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="img/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="img/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="img/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="img/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="img/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="img/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="img/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+        <link rel="manifest" href="img/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#1a6693">
+        <meta name="msapplication-TileImage" content="img/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#1a6693">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/jquery.dataTables.css">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row header">
+                <div class="col-md-2">
+                    <img id="logo" class="img-responsive" alt="Logo" src="img/favicon/android-icon-144x144.png"/>
+                </div>
+                <div class="col-md-10">
+                    <h4 id="title-1">Statistics of Publications for the</h4>
+                    <h1 id="title-2">Brazilian Workshop on Search-Based Software Engineering</h1>
+                </div>
+            </div>
+
+            <p>This page is maintained by <a target="_blank" href="http://www.github.com/thiagodnf">Thiago Nascimento</a>, Ph.D student at Federal University of Paraná</p>
+
+            <div class="panel-loading">
+                <img id="panel-loading-logo" class="img-responsive" src="img/loading.gif"/>
+                <p id="panel-loading-text">Loading...</p>
+            </div>
+
+            <br>
+
+            <div id="error"></div>
+
+            <div id="charts" class="hide">
+                <div class="chart" id="chart-year"></div>
+
+                <div class="chart" id="chart-author"></div>
+                <div class="chart" id="chart-university"></div>
+
+                <div class="chart" id="chart-application"></div>
+                <div class="chart" id="chart-algorithm"></div>
+
+                <div class="chart" id="chart-custom">
+                    <div class="chart-panel">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="bubble-chart-y-axis">Y Axis</label>
+                                    <select class="form-control" id="bubble-chart-y-axis" class="bubble-chart">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="bubble-chart-x-axis">X Axis</label>
+                                    <select class="form-control" id="bubble-chart-x-axis" class="bubble-chart">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="bubble-chart-color">Color:</label>
+                                    <select class="form-control" id="bubble-chart-color" class="bubble-chart">
+                                        <option value="#7cb5ec">Blue</option>
+                                        <option value="#434348">Black</option>
+                                        <option value="#90ed7d">Green</option>
+                                        <option value="#f7a35c">Orange</option>
+                                        <option value="#8085e9">Purple</option>
+                                        <option value="#f15c80">Pink</option>
+                                        <option value="#e4d354">Yellow</option>
+                                        <option value="#2b908f">Cornflower Blue</option>
+                                        <option value="#f45b5b">Red</option>
+                                        <option value="#91e8e1">Aquamarine</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-offset-6"></div>
+                        </div>
+                    </div>
+                    <div id="chart-two-dimensions"></div>
+                </div>
+
+                <div class="chart" id="dynamic-pie-chart">
+                    <div class="chart-panel" style="background-color: #f45b5b">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="chart-pie-dimension">Dimension</label>
+                                    <select class="form-control" id="chart-pie-dimension" data-type="dynamic-pie-chart">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-offset-10"></div>
+                        </div>
+                    </div>
+                    <div id="chart-plot-pie"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="chart" id="collaboration-network">
+                            <p class="chart-title">Collaboration Network</p>
+                            <center>
+                                <a href="#" class="btn btn-xs" id="btn-cn-view-data">View data</a>
+                            </center>
+                            <div style="text-align:center;" id="chart-collaborative"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="chart" id="force-directed-graph">
+
+                            <p class="chart-title">Researcher-driven Collaboration Network</p>
+                            <center>
+                                <p>You can perform a drag-and-drop operation for moving the nodes</p>
+                            </center>
+                            <div id="svg-force-directed-graph"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart chart-text">
+                    <h4>The most number of collaborations:</h4>
+                    <ul id="most-number-collaboration"></ul>
+                    <h4>The most number of authors:</h4>
+                    <ul id="most-number-author"></ul>
+                </div>
+
+                <div class="chart chart-text">
+                    <h4>List of Publications:</h4>
+                    <br>
+                    <div class="chart-text-body">
+                        <table id='table-list-of-publications' class='display' cellspacing='0' width='100%'>
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Reference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="chart credits">
+                    <h3>Credits</h3>
+                    <p>This page uses some great libraries:</p>
+                    <ul>
+                        <li><a href="https://osdn.jp/projects/sfnet_jsbibtex/">JavaScript BibTeX Parser</a></li>
+                        <li><a href="http://highcharts.com">Highcharts</a></li>
+                        <li><a href="https://jquery.com/">jQuery</a></li>
+                        <li><a href="http://getbootstrap.com/">Bootstrap</a></li>
+                        <li><a href="https://d3js.org">D3.js - Data-Driven Documents</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-view-data" tabindex="-1" role="dialog" aria-labelledby="modal-view-data-title">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="modal-view-data-title">Title</h4>
+					</div>
+					<div class="modal-body">
+						<table class="table table-striped" id="table-view-data">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th id="modal-view-data-field">Value</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <div class="modal" id="modal-export-bibtex" tabindex="-1" role="dialog" aria-labelledby="modal-view-data-title">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Bibtex</h4>
+					</div>
+					<div class="modal-body">
+                        <pre id="export-bibtex">
+
+                        </pre>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- default -->
+        <script type="text/javascript" charset="utf8" src="js/jquery.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/d3.v3.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://d3js.org/d3.v4.min.js"></script>
+
+        <!-- highcharts -->
+        <script type="text/javascript" charset="utf8" src="js/highcharts.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/highcharts-more.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/exporting.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/drilldown.js"></script>
+
+        <!-- custom -->
+        <script type="text/javascript" charset="utf8" src="js/util/arrays.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/util/highcharts.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/BibTex-0.1.2.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/collaborative-graph.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/force-directed-graph.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/publications.js"></script>
+        <script type="text/javascript" charset="utf8" src="js/script.js"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-46693870-15', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </body>
+</html>

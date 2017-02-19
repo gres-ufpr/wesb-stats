@@ -1,0 +1,201 @@
+body{
+    color: #757575;
+    background-color: #fafafa;
+    margin-top: 20px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow-y: scroll;
+}
+
+.panel-loading{
+    margin-top: 30px;
+}
+
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+
+.credits{
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-top: 1px;
+}
+
+.credits ul li{
+    padding-bottom: 10px;
+}
+
+.credits h3{
+    color: rgba(0, 0, 0, .87);
+    font-weight: bold;
+}
+
+.header{
+    margin-top: 0px;
+}
+
+.header, .chart{
+    margin-bottom: 30px;
+}
+
+.chart{
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+    border-radius: 2px;
+    background-color: white;
+}
+
+.chart-panel{
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: white;
+    background-color: #46B6AC;
+}
+
+.chart-text{
+    padding: 20px;
+    padding-top: 10px;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+    color: #333333;
+    line-height: 200%;
+}
+
+.chart-text h4{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.chart-text-body{
+    font-size: 14px;
+}
+
+.dataTables_filter label, .dataTables_length label{
+    font-weight: inherit !important;
+    font-size: 13px;
+}
+
+.chart-panel label{
+    font-weight: 100;
+}
+
+.chart-title{
+    color: #333333;
+    font-size: 18px;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding-top: 8px;
+}
+
+.header .col-md-2{
+    margin-right: 0px;
+}
+
+.header .col-md-10{
+    margin-left: -50px;
+}
+
+#title-1{
+    padding-top: 10px;
+    color: rgba(0, 0, 0, .54);
+}
+
+#title-2{
+    margin-top: 0px;
+    color: rgba(0, 0, 0, .87);
+    font-weight: bold;
+}
+
+#logo{
+    width: 105px;
+    margin-top: 20px;
+}
+
+@media (max-width: 992px) {
+    .header .col-md-10{
+        margin-left: 0px;
+    }
+}
+
+#collaboration-network{
+    height: 500px;
+}
+
+node {
+  font: 300 9px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  fill: #bbb;
+}
+
+.node:hover {
+  fill: #000;
+}
+
+.link {
+  stroke: steelblue;
+  stroke-opacity: .4;
+  fill: none;
+  pointer-events: none;
+}
+
+.node:hover,
+.node--source,
+.node--target {
+  font-weight: 700;
+}
+
+.node--source {
+  fill: #2ca02c;
+}
+
+.node--target {
+  fill: #d62728;
+}
+
+.link--source,
+.link--target {
+  stroke-opacity: 1;
+  stroke-width: 2px;
+}
+
+.link--source {
+  /*stroke: #d62728;*/
+  stroke: #2ca02c
+}
+
+.link--target {
+  stroke: #2ca02c;
+}
+
+
+
+#restart-force-directed-graph{
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+
+#svg-force-directed-graph{
+  height: 800px;
+}
+
+
+
+
+
+#panel-loading-logo{
+    width: 22px;
+    float: left;
+}
+
+#panel-loading-text{
+    margin-left: 35px;
+}
