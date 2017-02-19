@@ -1,4 +1,4 @@
-var url = "https://dl.dropbox.com/s/in9z84yv8kb28lb/references.bib?dl=1";
+var url = "https://raw.githubusercontent.com/thiagodnf/wesb-stats/master/references.bib";
 
 var entries = {};
 
