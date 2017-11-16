@@ -717,8 +717,13 @@ function plotTheMostNumberOf(id, ranking, size){
 	}
 }
 
+
+
+
+
 $(function(){
 
+/*
 	$.each(dimensionsForBubbleChart, function(index, obj){
 		$('#bubble-chart-x-axis').append($('<option>', {value: obj.bibtexEntry, text : obj.name}));
 		$('#bubble-chart-y-axis').append($('<option>', {value: obj.bibtexEntry, text : obj.name}));
@@ -786,6 +791,52 @@ $(function(){
 	//customPanBy({x: Math.round(Math.random() * 160 - 80), y: Math.round(Math.random() * 160 - 80)})
 	//});
 
+*/
 
+	$.ajax({
+			url: url,
+			dataType: "text",
+			success:  function(response){
+				var entries = parseBibtex(response);
+
+				$("#publications-by-year").publicationsByYear(entries);
+
+			},
+			error: function( event, request, exception){
+					//If exception null, then default to xhr.statusText
+					var errorMessage = exception || event.statusText;
+
+					$("#error").html(errorMessage);
+
+					hideSpin();
+			}
+	});
+
+	//
 
 });
+
+function parseBibtex(content){
+    messageSpin("Parsing...");
+
+    // Creating the bibtex object for parse the bibtext file
+    var bibtex = new BibTex();
+
+    // Getting the div's content for parse it
+    bibtex.content = content;
+
+    // Parse the bibtext file
+    bibtex.parse();
+
+    messageSpin("Processing the entries...");
+
+     // Array with all entries
+    var entries = [];
+
+    // Save all converted entries
+    for (var index = 0; index < bibtex.data.length; index++) {
+        entries.push(bibtex.data[index]);
+    }
+
+    return entries;
+}

@@ -5,8 +5,8 @@
 	"main": "app.js",
 	"scripts": {
 		"start": "node app.js",
-        "release": "node build.js --release",
-        "build": "node build.js"
+		"release": "node build.js --release",
+		"build": "node build.js"
 	},
 	"engines": {
 		"node": ">=0.10.0"
@@ -20,6 +20,6 @@
 	"dependencies": {
 		"serve-static": "",
 		"connect": "",
-		"network":""
-  	}
+		"network": ""
+	}
 }
