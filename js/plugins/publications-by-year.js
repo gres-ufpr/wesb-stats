@@ -10,14 +10,16 @@
 
             $.each(entries, function(key, entry){
 
-                //if( ! $.containsKey(ranking, entry.year)){
-                    ranking.push({entry.year: 2});
-                //}
+                var item = $.containsKey(ranking, entry.year);
 
-                //ranking[entry.year]++;
+                if( ! item){
+                    ranking.push({[entry.year]: 1});
+                }else{
+                    item[entry.year]++;
+                }
             });
 
-
+            console.log(ranking);
 
             $(this).plotVerticalColumns({
                 title: "Number of Publications by Year",

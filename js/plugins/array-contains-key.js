@@ -1,13 +1,13 @@
 (function( $ ) {
 
-    $.containsKey = function(array, keyValue) {
+    $.containsKey = function(array, key) {
 
-        $.each(array, function(id, value){
+        for(var i = 0; i < array.length; i++){
+            if(array[i].hasOwnProperty(key)){
+                return array[i];
+            }
+        }
 
-            console.log(value)
-        });
-
-        return true;
+        return;
     };
-
 }( jQuery ));
