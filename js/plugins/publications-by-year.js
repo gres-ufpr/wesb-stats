@@ -1,51 +1,37 @@
 (function( $ ) {
 
-    $.fn.publicationsByYear = function(options) {
+    $.fn.publicationsByYear = function(entries) {
 
-      console.log("Publications by year")
+        console.log("Generating Number of Publications by Year")
 
-    return this.each (function() {
-      $(this).html("oi");
-    });
+        return this.each (function() {
+
+            var ranking = [];
+
+            $.each(entries, function(key, entry){
+
+                //if( ! $.containsKey(ranking, entry.year)){
+                    ranking.push({entry.year: 2});
+                //}
+
+                //ranking[entry.year]++;
+            });
 
 
-    };
 
+            $(this).plotVerticalColumns({
+                title: "Number of Publications by Year",
+                subtitle: null,
+                categories: Object.keys(ranking),
+                series: [{
+                    name: 'Tokyo',
+                    data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                }],
+                data: ranking
+            });
 
-    function plotUsingColumns(elementId, entries, ranking, categoryTitle, countSorted){
-
-    	var title = "Number of Publications by " + categoryTitle;
-
-    	messageSpin("Ploting " + title + "...");
-
-    	if(countSorted){
-    		Arrays.sortRankingByLabel(ranking);
-    	}else{
-    		Arrays.sortRankingByCount(ranking);
-    	}
-
-        var categories = [];
-
-    	var data = [];
-
-    	$.each(ranking, function(key, entry){
-    		categories.push(entry.label);
-    		data.push(entry.count);
+            return $(this);
         });
-
-    	var series = [{name:"Number of Papers", data:data, color: "#7cb5ec"}];
-
-        var options = {
-    		elementId: elementId,
-    		categories: categories,
-    		series: series,
-    		title: title,
-            subtitle: " ",
-            legendEnabled: false,
-    		viewData: viewData(title, categoryTitle, ranking),
-    	};
-
-    	Highcharts.plotColumnChar(options);
-    }
+    };
 
 }( jQuery ));

@@ -797,10 +797,12 @@ $(function(){
 			url: url,
 			dataType: "text",
 			success:  function(response){
-				var entries = parseBibtex(response);
+
+				var entries = $.parse(response);
 
 				$("#publications-by-year").publicationsByYear(entries);
 
+				hideSpin();
 			},
 			error: function( event, request, exception){
 					//If exception null, then default to xhr.statusText
