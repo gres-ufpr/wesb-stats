@@ -16,6 +16,9 @@ requirejs.config({
         highchartsWordCloud : {
             deps : [ 'highcharts']
         },
+        highchartsBoost : {
+            deps : [ 'highcharts']
+        },
         "datatables.net" : {
             deps : [ 'jquery']
         },
@@ -37,6 +40,7 @@ requirejs.config({
         highchartsMore: 'vendor/highcharts-more',
         highchartsDrilldown: 'vendor/highcharts-drilldown',
         highchartsWordCloud: 'vendor/highcharts-wordcloud',
+        highchartsBoost: 'vendor/highcharts-boost',
         d3js: 'vendor/d3.v3.min',
         d3jsv4: 'vendor/d3.v4.min',
         "datatables.net": 'vendor/jquery.dataTables.min',
@@ -44,6 +48,9 @@ requirejs.config({
         "datatables.net-buttons": 'vendor/dataTables.buttons.min',
         dataTableColVis: 'vendor/buttons.colVis.min',
         publications: 'vendor/publications',
+        spinJs: 'vendor/spin.min',
+        remodal: 'vendor/remodal.min',
+        asyncJS: 'vendor/async.min',
         // Plugins
         parse: 'app/plugins/parse',
         publicationsByAuthor: 'app/plugins/chart-publications-by-author',

@@ -13,7 +13,7 @@ define([
             var defaults = {
                 title: "Title",
                 height: 500,
-                subtitle: "An Estimate",
+                subtitle: "",
                 series: [],
                 categoriesForXAxis: [],
                 categoriesForYAxis: [],
@@ -52,6 +52,9 @@ define([
                                  return settings.categoriesForXAxis[this.value];
              				},
                          }
+                     },
+                     boost: {
+                         useGPUTranslations: true
                      },
                      yAxis: {
                          min: -1,

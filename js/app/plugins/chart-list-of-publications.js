@@ -10,6 +10,7 @@ define([
     'datatables.net-buttons',
     'dataTableColVis',
     'publications',
+    'remodal',
 ], function($, sortBy, find, returnJust, insertUpdate, DataTable) {
 
     (function( $ ) {

@@ -13,7 +13,7 @@ define([
             var defaults = {
                 title: "Title",
                 height: 500,
-                subtitle: "An Estimate",
+                subtitle: "",
                 series: [],
                 categories: [],
                 legendEnabled: false,
@@ -53,6 +53,9 @@ define([
                                  color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
                              }
                          }
+                     },
+                     boost: {
+                         useGPUTranslations: true
                      },
                      legend: {
                          enabled: settings.legendEnabled,

@@ -1,6 +1,8 @@
 define([
     'jquery',
     'parse',
+    'spinJs',
+    'highchartsBoost',
     'publicationsByYear',
     'publicationsByAuthor',
     'publicationsByUniversity',
@@ -13,18 +15,34 @@ define([
     'listOfPublications',
     'wordCloudTitle',
     'wordCloudAbstract',
-], function($, parse) {
+], function($, parse, spinJS) {
 
     var url = "https://raw.githubusercontent.com/thiagodnf/wesb-stats/master/references.bib";
 
     $(function(){
+
+        function showSpin(){
+        	$(".panel-loading").removeClass("hide");
+        }
+
+        function hideSpin(){
+        	$(".panel-loading").addClass("hide");
+        }
+
+        showSpin();
 
         $.ajax({
     		url: url,
     		dataType: "text",
     		success:  function(response){
 
+                $("#panel-loading-text").text("Parsing...");
+
     			var entries = $.parse(response);
+
+                $("#panel-loading-text").text("Ploting...");
+
+                $("#content").removeClass("hide");
 
     			$("#publications-by-year").publicationsByYear(entries);
                 $("#publications-by-author").publicationsByAuthor(entries);
@@ -38,6 +56,8 @@ define([
                 $("#list-of-publications").listOfPublications(entries);
                 $("#word-cloud-title").wordCloudTitle(entries);
                 $("#word-cloud-abstract").wordCloudAbstract(entries);
+
+                hideSpin();
     		},
     		error: function( event, request, exception){
     			//If exception null, then default to xhr.statusText

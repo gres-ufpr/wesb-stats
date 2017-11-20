@@ -34,8 +34,9 @@ define([
                 " a ", " e ", " i ", " o ", " u ",
                 " da ", " de ", " do ",
                 " na ", " no ",
-                " on ", " the ", " in ", " of ", " for ", " and ",
-                ":"
+                " on ", " the ", " in ", " of ", " for ", " and ", " an ", " by ",
+                " at ", " are ", " is ", " this ", " that ", " about ", " to ",
+                ":", "-",
             ];
 
             $.each(ignoredWords, function(key, ignoredWord){
@@ -94,6 +95,9 @@ define([
                             text: "View data"
                         }
                     }
+                },
+                boost: {
+                    useGPUTranslations: true
                 },
                 series: [{
                     data: data,

@@ -13,7 +13,7 @@ define([
             var defaults = {
                 title: "Title",
                 height: 500,
-                subtitle: "An Estimate",
+                subtitle: "",
                 series: [],
                 categories: [],
                 legendEnabled: false,
@@ -52,6 +52,9 @@ define([
                          borderColor: '#CCC',
                          borderWidth: 1,
                          shadow: false
+                     },
+                     boost: {
+                         useGPUTranslations: true
                      },
                      tooltip: {
                          pointFormat: 'Number of Papers: <b>{point.y}</b>'
