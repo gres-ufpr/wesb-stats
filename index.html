@@ -34,7 +34,8 @@
         <meta name="theme-color" content="#1a6693">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/jquery.dataTables.css">
+        <link rel="stylesheet" href="css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="css/buttons.dataTables.min.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
@@ -61,134 +62,38 @@
             <div id="error"></div>
 
             <div class="chart" id="publications-by-year"></div>
+            <div class="chart" id="publications-by-author"></div>
+            <div class="chart" id="publications-by-university"></div>
+            <div class="chart" id="publications-by-application"></div>
+            <div class="chart" id="publications-by-algorithm"></div>
+
+            <div class="chart" id="dynamic-bubble-chart"></div>
+            <div class="chart" id="dynamic-pie-chart"></div>
+            <div class="chart" id="university-collaboration-network"></div>
+            <div class="chart" id="researcher-collaboration-network"></div>
+            <div class="chart" id="list-of-publications"></div>
+            <div class="chart" id="word-cloud-title"></div>
+            <div class="chart" id="word-cloud-abstract"></div>
+
+            <div class="chart">
+                <p class= "title">Credits</p>
+                <p>This page uses some great libraries:</p>
+                <ul>
+                    <li><a href="https://osdn.jp/projects/sfnet_jsbibtex/">JavaScript BibTeX Parser</a></li>
+                    <li><a href="http://highcharts.com">Highcharts</a></li>
+                    <li><a href="https://jquery.com/">jQuery</a></li>
+                    <li><a href="http://getbootstrap.com/">Bootstrap</a></li>
+                    <li><a href="https://d3js.org">D3.js - Data-Driven Documents</a></li>
+                </ul>
+            </div>
 
             <div id="charts" class="hide">
-
-
-
-                <div class="chart" id="chart-year"></div>
-
-                <div class="chart" id="chart-author"></div>
-                <div class="chart" id="chart-university"></div>
-
-                <div class="chart" id="chart-application"></div>
-                <div class="chart" id="chart-algorithm"></div>
-
-                <div class="chart" id="chart-custom">
-                    <div class="chart-panel">
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label for="bubble-chart-y-axis">Y Axis</label>
-                                    <select class="form-control" id="bubble-chart-y-axis" class="bubble-chart">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label for="bubble-chart-x-axis">X Axis</label>
-                                    <select class="form-control" id="bubble-chart-x-axis" class="bubble-chart">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label for="bubble-chart-color">Color:</label>
-                                    <select class="form-control" id="bubble-chart-color" class="bubble-chart">
-                                        <option value="#7cb5ec">Blue</option>
-                                        <option value="#434348">Black</option>
-                                        <option value="#90ed7d">Green</option>
-                                        <option value="#f7a35c">Orange</option>
-                                        <option value="#8085e9">Purple</option>
-                                        <option value="#f15c80">Pink</option>
-                                        <option value="#e4d354">Yellow</option>
-                                        <option value="#2b908f">Cornflower Blue</option>
-                                        <option value="#f45b5b">Red</option>
-                                        <option value="#91e8e1">Aquamarine</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-offset-6"></div>
-                        </div>
-                    </div>
-                    <div id="chart-two-dimensions"></div>
-                </div>
-
-                <div class="chart" id="dynamic-pie-chart">
-                    <div class="chart-panel" style="background-color: #f45b5b">
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label for="chart-pie-dimension">Dimension</label>
-                                    <select class="form-control" id="chart-pie-dimension" data-type="dynamic-pie-chart">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-offset-10"></div>
-                        </div>
-                    </div>
-                    <div id="chart-plot-pie"></div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="chart" id="collaboration-network">
-                            <p class="chart-title">Collaboration Network</p>
-                            <center>
-                                <a href="#" class="btn btn-xs" id="btn-cn-view-data">View data</a>
-                            </center>
-                            <div style="text-align:center;" id="chart-collaborative"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="chart" id="force-directed-graph">
-
-                            <p class="chart-title">Researcher-driven Collaboration Network</p>
-                            <center>
-                                <p>You can perform a drag-and-drop operation for moving the nodes</p>
-                            </center>
-                            <div id="svg-force-directed-graph"></div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="chart chart-text">
                     <h4>The most number of collaborations:</h4>
                     <ul id="most-number-collaboration"></ul>
                     <h4>The most number of authors:</h4>
                     <ul id="most-number-author"></ul>
-                </div>
-
-                <div class="chart chart-text">
-                    <h4>List of Publications:</h4>
-                    <br>
-                    <div class="chart-text-body">
-                        <table id='table-list-of-publications' class='display' cellspacing='0' width='100%'>
-                            <thead>
-                                <tr>
-                                    <th>Year</th>
-                                    <th>Reference</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="chart credits">
-                    <h3>Credits</h3>
-                    <p>This page uses some great libraries:</p>
-                    <ul>
-                        <li><a href="https://osdn.jp/projects/sfnet_jsbibtex/">JavaScript BibTeX Parser</a></li>
-                        <li><a href="http://highcharts.com">Highcharts</a></li>
-                        <li><a href="https://jquery.com/">jQuery</a></li>
-                        <li><a href="http://getbootstrap.com/">Bootstrap</a></li>
-                        <li><a href="https://d3js.org">D3.js - Data-Driven Documents</a></li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -197,19 +102,17 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title" id="modal-view-data-title">Title</h4>
+						<h4 class="modal-title">Title</h4>
 					</div>
 					<div class="modal-body">
 						<table class="table table-striped" id="table-view-data">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th id="modal-view-data-field">Value</th>
+                                    <th>Value</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
 					</div>
 					<div class="modal-footer">
@@ -237,33 +140,8 @@
 			</div>
 		</div>
 
-        <!-- default -->
-        <script type="text/javascript" charset="utf8" src="js/jquery.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/bootstrap.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/d3.v3.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="https://d3js.org/d3.v4.min.js"></script>
+        <script data-main="js/app" src="js/vendor/require.js"></script>
 
-        <!-- highcharts -->
-        <script type="text/javascript" charset="utf8" src="js/highcharts.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/highcharts-more.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/exporting.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/drilldown.js"></script>
-
-
-        <script type="text/javascript" charset="utf8" src="js/plugins/parse.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/plugins/array-contains-key.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/plugins/highcharts-vertical-columns.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/plugins/publications-by-year.js"></script>
-
-        <!-- custom -->
-        <script type="text/javascript" charset="utf8" src="js/util/arrays.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/util/highcharts.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/BibTex-0.1.2.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/collaborative-graph.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/force-directed-graph.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/publications.js"></script>
-        <script type="text/javascript" charset="utf8" src="js/script.js"></script>
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

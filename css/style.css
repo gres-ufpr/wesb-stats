@@ -38,54 +38,6 @@ body{
     margin-bottom: 30px;
 }
 
-.chart{
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
-    border-radius: 2px;
-    background-color: white;
-}
-
-.chart-panel{
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    color: white;
-    background-color: #46B6AC;
-}
-
-.chart-text{
-    padding: 20px;
-    padding-top: 10px;
-    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
-    color: #333333;
-    line-height: 200%;
-}
-
-.chart-text h4{
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.chart-text-body{
-    font-size: 14px;
-}
-
-.dataTables_filter label, .dataTables_length label{
-    font-weight: inherit !important;
-    font-size: 13px;
-}
-
-.chart-panel label{
-    font-weight: 100;
-}
-
-.chart-title{
-    color: #333333;
-    font-size: 18px;
-    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
-    text-align: center;
-    padding-top: 8px;
-}
-
 .header .col-md-2{
     margin-right: 0px;
 }
@@ -93,6 +45,25 @@ body{
 .header .col-md-10{
     margin-left: -50px;
 }
+
+.chart{
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+    border-radius: 2px;
+    background-color: white;
+    padding: 15px;
+    color: #333333;
+}
+
+.chart .title{
+    font-size: 18px;
+}
+
+.dataTables_filter label, .dataTables_length label{
+    font-weight: inherit !important;
+    font-size: 13px;
+}
+
 
 #title-1{
     padding-top: 10px;
@@ -180,6 +151,11 @@ node {
 .nodes circle {
   stroke: #fff;
   stroke-width: 1.5px;
+}
+
+.node text {
+  pointer-events: none;
+  font: 10px sans-serif;
 }
 
 

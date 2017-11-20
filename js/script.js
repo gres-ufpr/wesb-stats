@@ -70,22 +70,6 @@ var dimensionsForBubbleChart = [
 	{name:"Language",bibtexEntry:"custom_language", ignoredWords:[]},
 ];
 
-function appendRow(tableId, columns){
-	var row = "<tr>";
-
-	$.each(columns, function(key, column){
-        if(key === 0){
-            row += "<td width='50px'>CONTENT</td>".replace("CONTENT", column);
-        }else{
-            row += "<td>CONTENT</td>".replace("CONTENT", column);
-        }
-	});
-
-	row += "</tr>";
-
-	$(tableId+" > tbody").append(row);
-}
-
 function showSpin(){
 	$(".panel-loading").removeClass("hide");
 }
@@ -147,23 +131,7 @@ function loadBubbleChart(propX, propY, color){
 	plotTwoCategories("#chart-two-dimensions", entries, ranking, firstLabel, secondLabel, color);
 }
 
-function viewData(title, field, ranking){
-    return function(){
-        // Remove all rows before adding new rows
-        $("#table-view-data tbody").empty();
 
-        $("#modal-view-data-title").html(title);
-        $("#modal-view-data-field").html(field);
-
-        var id = 1;
-
-        $.each(ranking, function(index, value){
-            appendRow("#table-view-data", [(id++), value.label.replace("###"," "), value.count]);
-        });
-
-        $('#modal-view-data').modal('show');
-    };
-}
 
 function loadBibtextFileFromUrl(){
     showSpin();
@@ -794,51 +762,28 @@ $(function(){
 */
 
 	$.ajax({
-			url: url,
-			dataType: "text",
-			success:  function(response){
+		url: url,
+		dataType: "text",
+		success:  function(response){
 
-				var entries = $.parse(response);
+			var entries = $.parse(response);
 
-				$("#publications-by-year").publicationsByYear(entries);
+			$("#publications-by-year").publicationsByYear(entries);
+            $("#publications-by-author").publicationsByAuthor(entries);
+            $("#publications-by-ies").publicationsByIes(entries);
 
-				hideSpin();
-			},
-			error: function( event, request, exception){
-					//If exception null, then default to xhr.statusText
-					var errorMessage = exception || event.statusText;
+			hideSpin();
+		},
+		error: function( event, request, exception){
+			//If exception null, then default to xhr.statusText
+			var errorMessage = exception || event.statusText;
 
-					$("#error").html(errorMessage);
+			$("#error").html(errorMessage);
 
-					hideSpin();
-			}
+			hideSpin();
+		}
 	});
 
 	//
 
 });
-
-function parseBibtex(content){
-    messageSpin("Parsing...");
-
-    // Creating the bibtex object for parse the bibtext file
-    var bibtex = new BibTex();
-
-    // Getting the div's content for parse it
-    bibtex.content = content;
-
-    // Parse the bibtext file
-    bibtex.parse();
-
-    messageSpin("Processing the entries...");
-
-     // Array with all entries
-    var entries = [];
-
-    // Save all converted entries
-    for (var index = 0; index < bibtex.data.length; index++) {
-        entries.push(bibtex.data[index]);
-    }
-
-    return entries;
-}
