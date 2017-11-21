@@ -6,10 +6,9 @@ define([
     'insertUpdate',
     'unique',
     'split',
-    'utilUniversity',
     'd3js',
     'hierarchicalEdgeBundling',
-], function($, sortBy, find, returnJust, insertUpdate, unique, split,utilUniversity) {
+], function($, sortBy, find, returnJust, insertUpdate, unique, split) {
 
     (function( $ ) {
 

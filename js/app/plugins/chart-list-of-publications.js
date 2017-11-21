@@ -2,6 +2,8 @@ define([
     'jquery',
     'sortBy',
     'find',
+    'unique',
+    'split',
     'returnJust',
     'insertUpdate',
     'plotVerticalColumns',
@@ -10,8 +12,7 @@ define([
     'datatables.net-buttons',
     'dataTableColVis',
     'publications',
-    'remodal',
-], function($, sortBy, find, returnJust, insertUpdate, DataTable) {
+], function($, sortBy, find, unique, split, returnJust, insertUpdate, DataTable) {
 
     (function( $ ) {
 
@@ -35,6 +36,8 @@ define([
                                     <th>Instance Type</th> \
                                     <th>Statistical Test</th> \
                                     <th>Evaluation Method</th> \
+                                    <th>Number of Authors</th> \
+                                    <th>Number of Universities</th> \
                                 </tr> \
                             </thead> \
                             <tbody> \
@@ -45,6 +48,18 @@ define([
 
                 $(this).html(html);
 
+                $(document).on('click', ".pub-bib-link", function(event){
+                    event.preventDefault();
+
+                    $(".bibtex-entries").hide();
+
+                    var key = $(this).attr("data-bibtex-open");
+
+                    $("#"+key).toggle()
+
+                    return false;
+                });
+
                 tableListOfPublications = $(this).find("#table-list-of-publications").DataTable({
                     "order": [[ 0, "desc" ]],   // Sort by year. Newer first.
                     columnDefs: [
@@ -54,7 +69,7 @@ define([
                     buttons: [
                         'colvis'
                     ],
-                    "aoColumnDefs": [{ "bVisible": false, "aTargets": [2,3,4,5,6,7,8,9] }],
+                    "aoColumnDefs": [{ "bVisible": false, "aTargets": [2,3,4,5,6,7,8,9, 10, 11] }],
                     "autoWidth": false,
                     "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                     "iDisplayLength": 5
@@ -73,6 +88,8 @@ define([
                         entry.custom_instance_type.trim(),
                         entry.custom_statistical_test.trim(),
                         entry.custom_evaluation_method.trim(),
+                        entry.author.length,
+                        unique(split(entry.custom_ies.trim(), " and ")).length,
                     ]);
                 });
 

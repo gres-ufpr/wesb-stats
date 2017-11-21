@@ -4,8 +4,9 @@ define([
     'find',
     'returnJust',
     'insertUpdate',
+    'modalView',
     'plotHorizontalColumns',
-], function($, sortBy, find, returnJust,insertUpdate) {
+], function($, sortBy, find, returnJust,insertUpdate, modalViewData) {
 
     (function( $ ) {
 
@@ -27,7 +28,7 @@ define([
                     title: "Number of Publications by Author",
                     categories: returnJust("key", array).slice(0, 15),
                     exportingOnclick: function(){
-                        $.modalViewData(title, "Author", ranking);
+                        modalViewData("Number of Publications by Author", "Author", array);
                     },
                     series: [{
                         name: 'Number of Papers',

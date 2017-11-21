@@ -19,6 +19,9 @@ requirejs.config({
         highchartsBoost : {
             deps : [ 'highcharts']
         },
+        publications: {
+            deps : [ 'bibtex']
+        },
         "datatables.net" : {
             deps : [ 'jquery']
         },
@@ -33,7 +36,7 @@ requirejs.config({
         app: 'app',
         // Vendors
         jquery: 'vendor/jquery-3.2.1.min',
-        bootstrap: 'vendor/boostrap.min',
+        bootstrap: 'vendor/bootstrap.min',
         bibtex: 'vendor/bibtex-0.1.2',
         highcharts: 'vendor/highcharts',
         highchartsExporting: 'vendor/highcharts-exporting',
@@ -49,10 +52,7 @@ requirejs.config({
         dataTableColVis: 'vendor/buttons.colVis.min',
         publications: 'vendor/publications',
         spinJs: 'vendor/spin.min',
-        remodal: 'vendor/remodal.min',
-        asyncJS: 'vendor/async.min',
         // Plugins
-        parse: 'app/plugins/parse',
         publicationsByAuthor: 'app/plugins/chart-publications-by-author',
         publicationsByUniversity: 'app/plugins/chart-publications-by-university',
         publicationsByYear: 'app/plugins/chart-publications-by-year',
@@ -65,12 +65,16 @@ requirejs.config({
         listOfPublications: 'app/plugins/chart-list-of-publications',
         wordCloudTitle: 'app/plugins/chart-word-cloud-title',
         wordCloudAbstract: 'app/plugins/chart-word-cloud-abstract',
-        find: 'app/plugins/array-find',
-        sortBy: 'app/plugins/array-sort-by',
-        returnJust: 'app/plugins/array-return-just',
-        split: 'app/plugins/array-split',
-        unique: 'app/plugins/array-unique',
-        insertUpdate: 'app/plugins/array-insert-update',
+        // Utils
+        parse: 'app/utils/parse',
+        find: 'app/utils/array-find',
+        sortBy: 'app/utils/array-sort-by',
+        returnJust: 'app/utils/array-return-just',
+        split: 'app/utils/array-split',
+        unique: 'app/utils/array-unique',
+        insertUpdate: 'app/utils/array-insert-update',
+        modalView: 'app/utils/modal-view-data',
+
         plotVerticalColumns: 'app/plugins/highcharts-vertical-columns',
         plotHorizontalColumns: 'app/plugins/highcharts-horizontal-columns',
         plotPie: 'app/plugins/highcharts-pie',
@@ -78,8 +82,6 @@ requirejs.config({
         plotWordCloud: 'app/plugins/highcharts-word-cloud',
         hierarchicalEdgeBundling: 'app/plugins/d3js-hierarchical-edge-bundling',
         forceDirectedGraph: 'app/plugins/d3js-force-directed-graph',
-
-        utilUniversity: 'app/plugins/util-university',
     }
 });
 

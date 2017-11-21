@@ -5,8 +5,9 @@ define([
     'sortBy',
     'find',
     'insertUpdate',
+    'modalView',
     'plotBubbleChart',
-], function($, unique, split, sortBy, find, insertUpdate) {
+], function($, unique, split, sortBy, find, insertUpdate, modalViewData) {
 
     (function( $ ) {
 
@@ -63,7 +64,7 @@ define([
                 categoriesForXAxis: categoriesForXAxis,
                 categoriesForYAxis: categoriesForYAxis,
                 exportingOnclick: function(){
-                    $.modalViewData(title, "Application", array);
+                    modalViewData("Number of Publications by " + titleX + " and " + titleY, titleX + " and " + titleY, array);
                 },
                 series: [{ color: color, data: data}]
             });

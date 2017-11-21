@@ -31,13 +31,61 @@
         enabledDataLabels: true,
         yAxisTitle: 'Number of Papers',
         defaultPagination: 10,
+        transparentBackground: false,
+        backgroundColor: 'white',
+        dontShowBibtexEntryTypes: []
     };
 
     this.options = {};
 
      /** Contructor */
      this.initialize = function(bibtexSource, bibtexTable, bibtexChart, options){
+         this.bibtexSource = bibtexSource;
+         this.bibtexTable = bibtexTable;
+         this.bibtexChart = bibtexChart;
 
+         // Merge the options
+         this.options = $.extend({}, this.defaultOptions, options || {});
+
+         // Hide the bibtex source
+         $(bibtexSource).hide();
+
+         // Create the table and put it in the bibtext table
+         $(bibtexTable).html(" \
+             <table id='p-table' class='table table-striped table-bordered' cellspacing='0' width='100%'> \
+                 <thead> \
+                     <tr> \
+                         <th width='40px'>Year</th> \
+                         <th width='80px'>Type</th> \
+                         <th>Reference</th> \
+                     </tr> \
+                 </thead> \
+                 <tbody> \
+                 </tbody> \
+             </table> \
+         ");
+
+         // Parse from bibtext file to javascript object
+         this.entries = this.parse($(bibtexSource).html());
+
+        $(document).on('click', ".pub-bib-link", function(event){
+          event.preventDefault();
+
+          $(".bibtex-entries").hide();
+
+          var key = $(this).attr("data-bibtex-open");
+
+          $("#"+key).toggle()
+
+          return false;
+        });
+
+         // Create datatable component
+         this.table = $("#p-table").DataTable({
+             "order": [[ 0, "desc" ]],   // Sort by year. Newer first.
+             "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+             "iDisplayLength": this.options.defaultPagination
+         });
      };
 
      /** Convert the entry type to readable text */
@@ -78,7 +126,9 @@
          var entries = [];
          // Save all converted entries
          for (var index = 0; index < bibtex.data.length; index++) {
+           if(this.options.dontShowBibtexEntryTypes.indexOf(bibtex.data[index].entryType) == -1){
              entries.push(bibtex.data[index]);
+           }
          }
 
          // Call TRIM function in the all fields
@@ -167,7 +217,8 @@
 
          $(this.bibtexChart).highcharts({
              chart: {
-                 type: 'column'
+                 type: 'column',
+                 backgroundColor: this.options.transparentBackground? null : this.options.backgroundColor
              },
              title: {
                  text: this.options.chartTitle
@@ -493,14 +544,14 @@
         // UUID used to identify this entry when the user click at (bib) link
         var uuid = this.generateUUID();
 
-        reference += " (<a href='#' class='export-link' data-bibtex-entry=\"" + this.convertEntryToBibtex(entry) + "\">bib</a>)";
+        reference += " (<a href='#' class='pub-link pub-bib-link' data-bibtex-open='" + uuid + "'>bib</a>)";
 
-        //reference += "<div data-remodal-id='modal' data-bibtex-key='" + uuid + "'>";
-        //reference += "<button data-remodal-action='close' class='remodal-close'></button>";
-        //reference += "<pre>";
-        //reference += this.convertEntryToBibtex(entry);
-        //reference += "</pre>";
-        //reference += "</div>";
+
+        reference += "<div class='bibtex-entries' style='display:none' id='" + uuid + "'>";
+        reference += "<pre>";
+        reference += this.convertEntryToBibtex(entry);
+        reference += "</pre>";
+        reference += "</div>";
 
         return reference;
      }
@@ -520,7 +571,11 @@
 
          return this.htmlify(field || "");
      }
-
-     // Call the constructor
-     this.initialize(bibtexSource, bibtexTable, bibtextChart, options)
+     //
+     // if(!bibtexSource && !bibtexTable && !bibtextChart && !options){
+     //
+     // }else
+     //   // Call the constructor
+     //   this.initialize(bibtexSource, bibtexTable, bibtextChart, options)
+     // }
  }

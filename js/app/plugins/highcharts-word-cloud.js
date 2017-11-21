@@ -1,9 +1,10 @@
 define([
     'jquery',
+    'modalView',
     'highcharts',
     'highchartsExporting',
     'highchartsWordCloud',
-], function($) {
+], function($, modalViewData) {
 
     (function( $ ) {
 
@@ -16,7 +17,9 @@ define([
             var defaults = {
                 title: "Title",
                 height: 500,
-                exportingOnclick: null,
+                exportingOnclick: function(){
+                    modalViewData("Word Cloud", "Author", array);
+                },
                 text: ""
             }
 
@@ -33,7 +36,7 @@ define([
                 " com ", " uma ", " do ", " da ", " um ",
                 " a ", " e ", " i ", " o ", " u ",
                 " da ", " de ", " do ",
-                " na ", " no ",
+                " na ", " no ", " como ",
                 " on ", " the ", " in ", " of ", " for ", " and ", " an ", " by ",
                 " at ", " are ", " is ", " this ", " that ", " about ", " to ",
                 ":", "-",
@@ -58,10 +61,6 @@ define([
             $.each(replacedWords, function(key, replacedWord){
                 text = replaceAll(text, replacedWord[0], replacedWord[1]);
             });
-
-
-
-
 
             var lines = text.split(/[,\. ]+/g),
                 data = Highcharts.reduce(lines, function (arr, word) {
@@ -91,7 +90,14 @@ define([
                 exporting: {
                     buttons: {
                         customButton: {
-                            onclick: settings.exportingOnclick,
+                            onclick: function(){
+
+                                data.sort(function(a, b){
+                                    return b.weight - a.weight;
+                                });
+
+                                modalViewData("Word Cloud", "Author", data);
+                            },
                             text: "View data"
                         }
                     }

@@ -5,7 +5,8 @@ define([
     'sortBy',
     'find',
     'insertUpdate',
-], function($, unique, split, sortBy, find, insertUpdate) {
+    'modalView',
+], function($, unique, split, sortBy, find, insertUpdate, modalViewData) {
 
     (function( $ ) {
 
@@ -33,7 +34,7 @@ define([
             that.find("#chart-plot-pie").plotPie({
                 title: "Number of Publications by " + title,
                 exportingOnclick: function(){
-                    $.modalViewData(title, "Application", array);
+                    modalViewData("Number of Publications by " + title, title, array);
                 },
                 series: [{
                     colorByPoint: true,
@@ -58,6 +59,7 @@ define([
                                     <option value="custom_statistical_test">Statistical Test</option> \
                                     <option value="custom_evaluation_method">Evaluation Method</option> \
                                     <option value="custom_language">Language</option> \
+                                    <option value="custom_ies">University</option> \
                                 </select> \
                             </div> \
                         </div> \

@@ -5,8 +5,9 @@ define([
     'find',
     'sortBy',
     'insertUpdate',
+    'modalView',
     'plotPie',
-], function($, unique, split, find, sortBy, insertUpdate) {
+], function($, unique, split, find, sortBy, insertUpdate, modalViewData) {
 
     var drilldowns = {
 	   	"ACO" : "Swarm Intelligence",
@@ -92,7 +93,7 @@ define([
                     title: "Number of Publications by Algorithm",
                     subtitle: "Click the slices to view the algorithms",
                     exportingOnclick: function(){
-                        $.modalViewData(title, "Algorithm", ranking);
+                        modalViewData("Number of Publications by Algorithm", "Algorithm", algorithms);
                     },
                     series: [{
                         name: "Algorithm",

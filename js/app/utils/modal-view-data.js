@@ -1,6 +1,6 @@
-(function( $ ) {
+define(['jquery','bootstrap'], function($) {
 
-    $.modalViewData = function(title, field, ranking) {
+    return function(title, field, ranking) {
 
         $("#modal-view-data .modal-title").html(title);
 
@@ -9,7 +9,20 @@
         $("#table-view-data th:nth-child(1)").html(field);
 
         $.each(ranking, function(index, item){
-            appendRow("#table-view-data", [item.key.replace("###"," "), item.value]);
+
+            var col1 = item.key;
+
+            if( ! col1){
+                col1 = item.name;
+            }
+
+            var col2 = item.value;
+
+            if( ! col2){
+                col2 = item.weight;
+            }
+
+           appendRow("#table-view-data", [col1.replace("###"," "), col2]);
         });
 
         $('#modal-view-data').modal('show');
@@ -28,4 +41,4 @@
     	$(tableId+" > tbody").append(row);
     }
 
-}( jQuery ));
+});

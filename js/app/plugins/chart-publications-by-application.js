@@ -5,8 +5,9 @@ define([
     'sortBy',
     'find',
     'insertUpdate',
+    'modalView',
     'plotPie',
-], function($, unique, split, sortBy, find, insertUpdate) {
+], function($, unique, split, sortBy, find, insertUpdate, modalViewData) {
 
     (function( $ ) {
 
@@ -36,7 +37,7 @@ define([
                 $(this).plotPie({
                     title: "Number of Publications by Application",
                     exportingOnclick: function(){
-                        $.modalViewData(title, "Application", array);
+                        modalViewData("Number of Publications by Application", "Application", array);
                     },
                     series: [{
                         colorByPoint: true,
