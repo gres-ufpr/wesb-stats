@@ -17,7 +17,7 @@ define([
     'wordCloudAbstract',
 ], function($, parse, spinJS) {
 
-    var url = "https://raw.githubusercontent.com/thiagodnf/wesb-stats/master/references.bib";
+    var url = "https://raw.githubusercontent.com/gres-ufpr/wesb-stats/master/references.bib";
 
     $(function(){
 
