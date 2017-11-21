@@ -34,14 +34,21 @@ define([
                 var words = split(text, " ");
 
                 var ignoredWords = [
+                    ":", "-", "'",
                     " de "," para "," em ", " Uma ", " na ", " ao ", " por ",
                     " com ", " uma ", " do ", " da ", " um ",
                     " a ", " e ", " i ", " o ", " u ",
                     " da ", " de ", " do ",
-                    " na ", " no ", " como ",
-                    " on ", " the ", " in ", " of ", " for ", " and ", " an ", " by ",
-                    " at ", " are ", " is ", " this ", " that ", " about ", " to ",
-                    ":", "-",
+                    " na ", " no ", " como ", " que ", " as ", " é ", " das ", " dos ",
+                    " se ", " os ", " esse ", " essa ", " isso ", " nas ", " nos ", " são ", " tem ",
+                    " têm ", " sua ", " seu ", " se ", " foi ", " pode ", " ser ", " ou ", " mais ",
+                    " seja ", " sido ", " seus ", " suas ", " este ", " esta ", " isto ",
+                    " with ", " or ", " its ", " it ", " which ", " those ", " these ", " has ", " have ",
+                    " on ", " the ", " in ", " of ", " for ", " and ", " an ", " by ", " been ", " from ", " more ",
+                    " at ", " are ", " is ", " this ", " that ", " about ", " to ", " be ", " we ",
+                    " into ", " ever ", " most ", " over ",
+                    " thus ", " i ", " e ", " than ", " was ", " were ",
+
                 ];
 
                 $.each(ignoredWords, function(key, ignoredWord){
@@ -58,6 +65,19 @@ define([
                     ["testes", "teste"],
                     ["nsgaII", "nsga-II"],
                     ["meta-heurísticas", "nsga-II"],
+                    ["baseado", "baseada"],
+                    ["casos", "caso"],
+                    ["funções", "função"],
+                    ["heuristicas", "heuristica"],
+                    ["métricas", "métrica"],
+                    ["pesquisas", "pesquisa"],
+                    ["propostas", "proposta"],
+                    ["relevâncias", "relevância"],
+                    ["técnicas", "técnica"],
+                    ["evaluated", "evaluate"],
+                    ["evaluates", "evaluate"],
+                    ["projects", "project"],
+                    ["works", "work"],
                 ];
 
                 $.each(replacedWords, function(key, replacedWord){

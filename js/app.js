@@ -64,7 +64,8 @@ requirejs.config({
         researchCollaborationNetwork: 'app/plugins/chart-collaboration-network-for-researcher',
         listOfPublications: 'app/plugins/chart-list-of-publications',
         wordCloudTitle: 'app/plugins/chart-word-cloud-title',
-        wordCloudAbstract: 'app/plugins/chart-word-cloud-abstract',
+        wordCloudAbstractEnglish: 'app/plugins/chart-word-cloud-abstract-english',
+        wordCloudAbstractPortuguese: 'app/plugins/chart-word-cloud-abstract-portuguese',
         // Utils
         parse: 'app/utils/parse',
         find: 'app/utils/array-find',

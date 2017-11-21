@@ -14,7 +14,8 @@ define([
     'researchCollaborationNetwork',
     'listOfPublications',
     'wordCloudTitle',
-    'wordCloudAbstract',
+    'wordCloudAbstractEnglish',
+    'wordCloudAbstractPortuguese',
 ], function($, parse, spinJS) {
 
     var url = "https://raw.githubusercontent.com/gres-ufpr/wesb-stats/master/references.bib";
@@ -55,7 +56,8 @@ define([
                 $("#researcher-collaboration-network").researcherCollaborationNetwork(entries);
                 $("#list-of-publications").listOfPublications(entries);
                 $("#word-cloud-title").wordCloudTitle(entries);
-                $("#word-cloud-abstract").wordCloudAbstract(entries);
+                $("#word-cloud-abstract-english").wordCloudAbstractEnglish(entries);
+                $("#word-cloud-abstract-portuguese").wordCloudAbstractPortuguese(entries);
 
                 hideSpin();
     		},

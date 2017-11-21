@@ -9,7 +9,7 @@ define([
 
     (function( $ ) {
 
-        $.fn.wordCloudAbstract = function(entries) {
+        $.fn.wordCloudAbstractPortuguese = function(entries) {
 
             return this.each (function() {
 
@@ -17,13 +17,13 @@ define([
 
                 $.each(entries, function(key, entry){
 
-                    if(entry.abstract){
-                        text += entry.abstract + " ";
+                    if(entry.custom_abstract){
+                        text += entry.custom_abstract + " ";
                     }
                 });
 
                 $(this).plotWordCloud({
-                    title: "Word Cloud of Abstract",
+                    title: "Word Cloud of Abstract (Portuguese)",
                     text: text
                 });
 
