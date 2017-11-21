@@ -26,9 +26,9 @@ define([
                 .append("g");
 
             var force = d3.layout.force()
-                .gravity(0.05)
-                .distance(100)
-                .charge(-100)
+                .gravity(0.01)
+                .distance(150)
+                .charge(-150)
                 .size([width, height]);
 
             force.nodes(nodes)
