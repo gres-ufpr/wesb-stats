@@ -34,10 +34,10 @@ define([
                 var words = split(text, " ");
 
                 var ignoredWords = [
-                    ":", "-", "'",
+                    ":", "'", "\\\(","\\\)", "/",
                     " de "," para "," em ", " Uma ", " na ", " ao ", " por ",
                     " com ", " uma ", " do ", " da ", " um ",
-                    " a ", " e ", " i ", " o ", " u ",
+                    " a ", " e ", " i ", " o ", " u ", " é ",
                     " da ", " de ", " do ",
                     " na ", " no ", " como ", " que ", " as ", " é ", " das ", " dos ",
                     " se ", " os ", " esse ", " essa ", " isso ", " nas ", " nos ", " são ", " tem ",
@@ -48,7 +48,7 @@ define([
                     " at ", " are ", " is ", " this ", " that ", " about ", " to ", " be ", " we ",
                     " into ", " ever ", " most ", " over ",
                     " thus ", " i ", " e ", " than ", " was ", " were ",
-
+                    " that ", " their ", " them ", " there ", " when ",
                 ];
 
                 $.each(ignoredWords, function(key, ignoredWord){
@@ -60,6 +60,7 @@ define([
                     ["multiobjetivo", "multi-objetivo"],
                     ["multiobjetiva", "multi-objetiva"],
                     ["multi-objetivos", "multi-objetivo"],
+                    ["multiobjective", "multi-objective"],
                     ["releases", "release"],
                     ["algoritmos", "algoritmo"],
                     ["testes", "teste"],
@@ -78,6 +79,31 @@ define([
                     ["evaluates", "evaluate"],
                     ["projects", "project"],
                     ["works", "work"],
+                    ["algorithms", "algorithm"],
+                    ["algoritmos", "algoritmo"],
+                    ["cases", "case"],
+                    ["efforts", "effort"],
+                    ["elements", "element"],
+                    ["faults", "fault"],
+                    ["functions", "function"],
+                    ["hyper-heuristics", "hyper-heuristic"],
+                    ["meta-heuristics", "meta-heuristic"],
+                    ["metaheuristic", "meta-heuristic"],
+                    ["metrics", "metric"],
+                    ["objectives", "objective"],
+                    ["operators", "operator"],
+                    ["problems", "problem"],
+                    ["products", "product"],
+                    ["project’s", "project"],
+                    ["requirements", "requirement"],
+                    ["researches", "research"],
+                    ["solutions", "solution"],
+                    ["sources", "source"],
+                    ["strategies", "strategy"],
+                    ["studies", "study"],
+                    ["systems", "system"],
+                    ["techniques", "technique"],
+                    ["versions", "version"],
                 ];
 
                 $.each(replacedWords, function(key, replacedWord){
@@ -100,6 +126,16 @@ define([
                         }
                         return arr;
                     }, []);
+
+                var filtered = [];
+
+
+                $.each(data, function(key, d){
+                    if(d.weight > 1){
+                        filtered.push(d);
+                    }
+                });
+
 
                 $(this).highcharts({
                     chart: {
@@ -128,7 +164,7 @@ define([
                         useGPUTranslations: true
                     },
                     series: [{
-                        data: data,
+                        data: filtered,
                         name: 'Occurrences'
                     }],
                     title: {
