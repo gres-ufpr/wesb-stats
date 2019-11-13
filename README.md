@@ -4,6 +4,10 @@
 
 Statistics of Publications for the Brazilian Workshop on Search-Based Software Engineering (WESB)
 
+## Access
+
+https://gres-ufpr.github.io/wesb-stats
+
 ## Questions or Suggestions
 
 Feel free to create <a href="https://github.com/gres-ufpr/wesb-stats/issues">issues</a> here as you need
