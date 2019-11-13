@@ -20,6 +20,10 @@ define([
 
     var url = "https://raw.githubusercontent.com/gres-ufpr/wesb-stats/master/references.bib";
 
+    if (location.hostname === "localhost" || location.hostname === "127.0.0.1"){
+        url = "http://localhost:8080/wesb-stats/references.bib";
+    }
+
     $(function(){
 
         function showSpin(){
