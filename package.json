@@ -20,6 +20,8 @@
 	"dependencies": {
 		"serve-static": "",
 		"connect": "",
-		"network": ""
+		"network": "",
+		"livereload": "^0.7.0",
+		"winston": "^2.4.2"
 	}
 }

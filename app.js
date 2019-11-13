@@ -1,13 +1,36 @@
 var connect = require('connect');
     serveStatic = require('serve-static');
     network = require('network');
-	port = process.env.PORT || 8080;
+    winston = require('winston');
+    port = process.env.PORT || 8080;
+    liveReload = require('livereload');
+    project = require('./package.json');
 
-connect().use(serveStatic(__dirname)).listen(port);
+connect().use('/' + project.name, serveStatic(__dirname)).listen(port)
 
-console.log("Running wesb-stats");
+var liveReloadServer = liveReload.createServer()
+
+liveReloadServer.watch(__dirname)
+
+winston.info('Running:')
+winston.info('\t' + project.name)
+winston.info('LiveReload Server is watching:')
+winston.info('\t' + __dirname)
 
 network.get_active_interface(function(err, obj) {
-    console.log('The magic happens at http://localhost:' + port);
-    console.log('The magic happens at: '+obj.ip_address+":"+ port);
+
+    var address = `:${port}/${project.name}`;
+
+    winston.info('The magic happens at')
+    winston.info('\t Localhost: http://localhost' + address)
+
+    network.get_public_ip(function(err, ip) {
+        // should return your public IP address
+        winston.info("\t Public IP:", err || ip + address);
+    })
+
+    network.get_private_ip(function(err, ip) {
+        // err may be 'No active network interface found'.
+        winston.info("\t Private IP:", err || ip + address);
+    })
 });
